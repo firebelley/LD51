@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scenes/game_object/Grapple.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/game_object/Player.cs" type="Script" id=2]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 6.0
+
+[node name="Player" type="KinematicBody2D"]
+script = ExtResource( 2 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = -8.0
+margin_top = -32.0
+margin_right = 8.0
+rect_pivot_offset = Vector2( 8, 16 )
+mouse_filter = 2
+
+[node name="Grapple" parent="." instance=ExtResource( 1 )]
+position = Vector2( 0, -16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -6 )
+shape = SubResource( 1 )
