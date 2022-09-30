@@ -1,0 +1,47 @@
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  export_game:
+    runs-on: ubuntu-latest
+    name: Export Game
+    steps:
+      - name: Checkout Files
+        uses: actions/checkout@v3.0.2
+        with:
+          fetch-depth: 0
+          submodules: "recursive"
+
+      - name: Get Tag Version
+        id: tag_version
+        run: |
+          echo ::set-output name=TAG_VERSION::v${GITHUB_REF#refs/tags/v}
+
+      - name: install wine
+        id: wine_install
+        run: |
+          sudo apt install wine64
+          echo ::set-output name=WINE_PATH::$(which wine64)
+
+      - name: Export
+        id: export
+        uses: firebelley/godot-export@v4.2.0
+        with:
+          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/mono/Godot_v3.5.1-stable_mono_linux_headless_64.zip
+          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.5.1/mono/Godot_v3.5.1-stable_mono_export_templates.tpz
+          relative_project_path: .
+          archive_output: true
+          wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: create release
+        uses: softprops/action-gh-release@v0.1.14
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+          tag_name: ${{ steps.tag_version.outputs.TAG_VERSION }}
+          files: ${{ steps.export.outputs.archive_directory }}/*

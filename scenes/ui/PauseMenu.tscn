@@ -1,0 +1,59 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scripts/ui/PauseMenu.cs" type="Script" id=1]
+[ext_resource path="res://resources/theme.tres" type="Theme" id=2]
+[ext_resource path="res://scenes/ui/AnimatedButton.tscn" type="PackedScene" id=4]
+
+[node name="PauseMenu" type="CanvasLayer"]
+pause_mode = 2
+layer = 2
+script = ExtResource( 1 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0784314, 0.0627451, 0.0745098, 0.329412 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 463.0
+margin_top = 251.0
+margin_right = 560.0
+margin_bottom = 349.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_constants/separation = 8
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+margin_left = 23.0
+margin_right = 74.0
+margin_bottom = 14.0
+size_flags_horizontal = 4
+size_flags_vertical = 0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "PAUSED"
+
+[node name="ResumeButton" parent="MarginContainer/VBoxContainer" instance=ExtResource( 4 )]
+unique_name_in_owner = true
+margin_top = 22.0
+margin_right = 97.0
+margin_bottom = 42.0
+text = "Resume"
+
+[node name="OptionsButton" parent="MarginContainer/VBoxContainer" instance=ExtResource( 4 )]
+unique_name_in_owner = true
+margin_top = 50.0
+margin_right = 97.0
+margin_bottom = 70.0
+text = "Options"
+
+[node name="QuitButton" parent="MarginContainer/VBoxContainer" instance=ExtResource( 4 )]
+unique_name_in_owner = true
+margin_top = 78.0
+margin_right = 97.0
+margin_bottom = 98.0
+text = "Quit to Menu"

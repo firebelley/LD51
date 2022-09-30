@@ -1,0 +1,16 @@
+﻿<Project Sdk="Godot.NET.Sdk/3.3.0">
+  <PropertyGroup>
+    <RootNamespace>Game</RootNamespace>
+    <CodeAnalysisRuleSet>roslynator.ruleset</CodeAnalysisRuleSet>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Firebelley.GodotUtilities" Version="2.0.1" />
+    <PackageReference Include="Roslynator.Analyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <Reference Include="System" />
+  </ItemGroup>
+</Project>
