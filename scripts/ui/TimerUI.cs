@@ -1,4 +1,4 @@
-using Game.Manager;
+using System;
 using Godot;
 using GodotUtilities;
 
@@ -9,8 +9,6 @@ namespace Game.UI
         [Node]
         private Label label;
 
-        private EnemyManager enemyManager;
-
         public override void _Notification(int what)
         {
             if (what == NotificationInstanced)
@@ -19,14 +17,15 @@ namespace Game.UI
             }
         }
 
-        public override void _Process(float delta)
+        public override void _Ready()
         {
-            label.Text = string.Format("{0:0.0}", enemyManager?.Timer?.TimeLeft ?? 0);
+            GetParent<Main>().Connect(nameof(Main.SecondsChanged), this, nameof(OnSecondsChanged));
         }
 
-        public void ConnectEnemyManager(EnemyManager enemyManager)
+        private void OnSecondsChanged(float seconds)
         {
-            this.enemyManager = enemyManager;
+            TimeSpan t = TimeSpan.FromSeconds(seconds);
+            label.Text = string.Format("{0:D1}:{1:D2}", t.Minutes, t.Seconds);
         }
     }
 }

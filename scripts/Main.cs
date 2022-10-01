@@ -1,5 +1,3 @@
-using Game.Manager;
-using Game.UI;
 using Godot;
 using GodotUtilities;
 
@@ -7,10 +5,19 @@ namespace Game
 {
     public class Main : Node
     {
-        [Node]
-        private TimerUI timerUI;
-        // [Node]
-        // private EnemyManager enemyManager;
+        [Signal]
+        public delegate void SecondsChanged(float seconds);
+
+        private float seconds = 60;
+        private float Seconds
+        {
+            get => seconds;
+            set
+            {
+                seconds = value;
+                EmitSignal(nameof(SecondsChanged), value);
+            }
+        }
 
         public override void _Notification(int what)
         {
@@ -22,7 +29,12 @@ namespace Game
 
         public override void _Ready()
         {
-            // timerUI.ConnectEnemyManager(enemyManager);
+            EmitSignal(nameof(SecondsChanged), Seconds);
+        }
+
+        public void SecondsKilled(float seconds)
+        {
+            Seconds -= seconds;
         }
     }
 }
