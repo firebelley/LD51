@@ -14,7 +14,7 @@ namespace Game.GameObject
         private const float MAX_Y_VELOCITY = 1200f;
         private const float JUMP_GRAVITY_MULTIPLIER = 3f;
         private const float GRAPPLE_FORCE_DECAY = 5f;
-        private const float MAX_GRAPPLE_FORCE = 1200f;
+        private const float MAX_GRAPPLE_FORCE = 2000f;
         private const float KNOCKBACK_FORCE = 1000f;
 
         [Node]
@@ -121,6 +121,7 @@ namespace Game.GameObject
         private void EnterStateGrappling()
         {
             currentGrappleForce = 0f;
+            GlobalPosition += Vector2.Up;
         }
 
         private void StateGrappling()
@@ -129,7 +130,16 @@ namespace Game.GameObject
             var direction = (grappleConnectedPoint - grapple.GlobalPosition).Normalized();
             currentGrappleForce = Mathf.Lerp(currentGrappleForce, MAX_GRAPPLE_FORCE, 1f - Mathf.Exp(-GRAPPLE_FORCE_DECAY * delta));
             velocity = velocity.LinearInterpolate(direction * currentGrappleForce, 1f - Mathf.Exp(-GRAPPLE_FORCE_DECAY * delta));
-            velocity = MoveAndSlide(velocity);
+            velocity = MoveAndSlideWithSnap(velocity, Vector2.Down, Vector2.Up);
+            if (IsOnFloor() || IsOnCeiling() || IsOnWall())
+            {
+                GameCamera.Shake();
+                grapple.DisconnectGrapple();
+            }
+            else if (grapple.GlobalPosition.DistanceSquaredTo(grappleConnectedPoint) < 32 * 32)
+            {
+
+            }
         }
 
         private void EnterStateKnockback()

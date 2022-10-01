@@ -9,8 +9,8 @@ namespace Game
     {
         [Node]
         private TimerUI timerUI;
-        [Node]
-        private EnemyManager enemyManager;
+        // [Node]
+        // private EnemyManager enemyManager;
 
         public override void _Notification(int what)
         {
@@ -22,8 +22,7 @@ namespace Game
 
         public override void _Ready()
         {
-            GD.Print(timerUI);
-            timerUI.ConnectEnemyManager(enemyManager);
+            // timerUI.ConnectEnemyManager(enemyManager);
         }
     }
 }

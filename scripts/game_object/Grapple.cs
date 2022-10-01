@@ -44,9 +44,7 @@ namespace Game.GameObject
         {
             if (isConnected)
             {
-                isConnected = false;
-                ClearGrapple();
-                EmitSignal(nameof(Disconnected));
+                DisconnectGrapple();
                 return;
             }
 
@@ -67,6 +65,13 @@ namespace Game.GameObject
         public void ClearGrapple()
         {
             line2d.ClearPoints();
+        }
+
+        public void DisconnectGrapple()
+        {
+            ClearGrapple();
+            isConnected = false;
+            EmitSignal(nameof(Disconnected));
         }
 
         private void UpdateGrapple()
