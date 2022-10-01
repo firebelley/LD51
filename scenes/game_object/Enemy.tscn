@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scripts/game_object/Enemy.cs" type="Script" id=1]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 12, 18 )
 
 [node name="Enemy" type="Node2D"]
 script = ExtResource( 1 )
@@ -11,3 +14,11 @@ margin_top = -48.0
 margin_right = 16.0
 rect_pivot_offset = Vector2( 16, 24 )
 color = Color( 0.8, 0.203922, 0.203922, 1 )
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2( 0, -24 )
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 1 )

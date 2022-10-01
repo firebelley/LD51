@@ -92,6 +92,12 @@ jump={
  ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="TERRAIN"
+2d_physics/layer_2="PLAYER"
+2d_physics/layer_3="ENEMY"
+
 [mono]
 
 project/assembly_name="Game"

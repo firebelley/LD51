@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scenes/game_object/Grapple.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/game_object/Player.cs" type="Script" id=2]
@@ -6,9 +6,16 @@
 [sub_resource type="CircleShape2D" id=1]
 radius = 8.0
 
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 6, 12 )
+
 [node name="Player" type="KinematicBody2D"]
 collision_layer = 0
 script = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
 
 [node name="ColorRect" type="ColorRect" parent="."]
 margin_left = -8.0
@@ -23,3 +30,11 @@ position = Vector2( 0, -16 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -8 )
 shape = SubResource( 1 )
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2( 0, -16 )
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 2 )

@@ -9,9 +9,18 @@ namespace Game.GameObject
         public delegate void OnDied();
 
         private const float ATTACK_OFFSET = 256f;
+        private const float MAX_SPEED = 800f;
 
-        private Vector2 desiredPoint;
+        [Node]
+        private Area2D area2d;
+
         public Vector2 Direction { get; private set; }
+        private Vector2 desiredPoint;
+        private Vector2 startingPoint;
+        private Vector2 velocity;
+
+        private float currentSpeed;
+        private bool collided;
 
         public override void _Notification(int what)
         {
@@ -23,7 +32,23 @@ namespace Game.GameObject
 
         public override void _Ready()
         {
+            area2d.Connect("area_entered", this, nameof(OnAreaEntered));
             CallDeferred(nameof(Init));
+        }
+
+        public override void _Process(float delta)
+        {
+            var player = GetTree().GetFirstNodeInGroup<Player>();
+            var playerPos = player?.GlobalPosition ?? Vector2.Zero;
+
+            if (!collided)
+            {
+                var desiredDirection = (playerPos - GlobalPosition).Normalized();
+                Direction = velocity.Normalized().LinearInterpolate(desiredDirection, 1f - Mathf.Exp(-10f * delta)).Normalized();
+            }
+
+            velocity = Direction * currentSpeed;
+            GlobalPosition += velocity * delta;
         }
 
         private void Die()
@@ -34,14 +59,23 @@ namespace Game.GameObject
 
         private void Init()
         {
-            var player = GetTree().GetFirstNodeInGroup<Player>();
-            // TODO: need to define a center position
-            Direction = ((player?.GlobalPosition ?? Vector2.Zero) - GlobalPosition).Normalized();
+
+            startingPoint = GlobalPosition;
             desiredPoint = GlobalPosition + (Direction * ATTACK_OFFSET);
 
             var tween = CreateTween();
-            tween.TweenProperty(this, "global_position", desiredPoint, 1.5f).SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Quint);
+            tween.TweenProperty(this, nameof(currentSpeed), MAX_SPEED, 1.25f).SetEase(Tween.EaseType.In).SetTrans(Tween.TransitionType.Sine);
+            tween.TweenProperty(this, nameof(currentSpeed), 0f, 1.25f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Sine);
             tween.TweenCallback(this, nameof(Die));
+        }
+
+        private void OnAreaEntered(Area2D otherArea)
+        {
+            if (otherArea.Owner is Player)
+            {
+                collided = true;
+                area2d.GetFirstNodeOfType<CollisionShape2D>().SetDeferred("disabled", true);
+            }
         }
     }
 }

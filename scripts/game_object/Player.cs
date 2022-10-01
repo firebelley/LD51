@@ -11,23 +11,31 @@ namespace Game.GameObject
         private const float AIRBORNE_ACCELERATION = 5f;
         private const float JUMP_FORCE = 428;
         private const float GRAVITY = 1200f;
+        private const float MAX_Y_VELOCITY = 1200f;
         private const float JUMP_GRAVITY_MULTIPLIER = 3f;
         private const float GRAPPLE_FORCE_DECAY = 5f;
         private const float MAX_GRAPPLE_FORCE = 1200f;
+        private const float KNOCKBACK_FORCE = 1000f;
 
         [Node]
         private Grapple grapple;
+        [Node]
+        private Area2D area2d;
+        [Node]
+        private Timer knockbackTimer;
 
         private Vector2 velocity;
-        private bool isGrappling = false;
-        private Vector2 connectedPoint;
+        private Vector2 grappleConnectedPoint;
         private float currentGrappleForce;
+
+        private Vector2 knockbackDirection;
 
         private enum State
         {
             Normal,
             Airborne,
-            Grappling
+            Grappling,
+            Knockback
         }
         private StateMachine<State> stateMachine = new();
 
@@ -44,15 +52,19 @@ namespace Game.GameObject
         {
             stateMachine.AddState(State.Normal, StateNormal);
             stateMachine.AddState(State.Airborne, StateAirborne);
+            stateMachine.AddEnterState(State.Grappling, EnterStateGrappling);
             stateMachine.AddState(State.Grappling, StateGrappling);
+            stateMachine.AddEnterState(State.Knockback, EnterStateKnockback);
+            stateMachine.AddState(State.Knockback, StateKnockback);
             stateMachine.SetInitialState(StateAirborne);
             grapple.Connect(nameof(Grapple.ConnectedToPoint), this, nameof(OnGrappleConnected));
             grapple.Connect(nameof(Grapple.Disconnected), this, nameof(OnGrappleDisconnected));
+            area2d.Connect("area_entered", this, nameof(OnAreaEntered));
         }
 
         public override void _UnhandledInput(InputEvent evt)
         {
-            if (evt.IsActionPressed("grapple"))
+            if (evt.IsActionPressed("grapple") && stateMachine.GetCurrentState() != State.Knockback)
             {
                 grapple.Shoot();
             }
@@ -77,12 +89,12 @@ namespace Game.GameObject
                 velocity.y = -JUMP_FORCE;
             }
 
-            if (!Input.IsActionPressed("jump") && velocity.y < 0 && !isGrappling)
+            if (!Input.IsActionPressed("jump") && velocity.y < 0)
             {
                 gravityMultiplier = JUMP_GRAVITY_MULTIPLIER;
             }
 
-            velocity.y += GRAVITY * delta * gravityMultiplier;
+            ApplyGravity(gravityMultiplier);
             velocity = MoveAndSlideWithSnap(velocity, Vector2.Down, Vector2.Up);
 
             if (!IsOnFloor())
@@ -96,7 +108,7 @@ namespace Game.GameObject
             var delta = GetProcessDeltaTime();
             var moveVec = GetMovementVector();
             velocity.x = Mathf.Lerp(velocity.x, GROUNDED_SPEED * moveVec.x, 1f - Mathf.Exp(-AIRBORNE_ACCELERATION * delta));
-            velocity.y += GRAVITY * delta;
+            ApplyGravity();
 
             velocity = MoveAndSlideWithSnap(velocity, Vector2.Down, Vector2.Up);
 
@@ -106,13 +118,37 @@ namespace Game.GameObject
             }
         }
 
+        private void EnterStateGrappling()
+        {
+            currentGrappleForce = 0f;
+        }
+
         private void StateGrappling()
         {
             var delta = GetProcessDeltaTime();
-            var direction = (connectedPoint - grapple.GlobalPosition).Normalized();
+            var direction = (grappleConnectedPoint - grapple.GlobalPosition).Normalized();
             currentGrappleForce = Mathf.Lerp(currentGrappleForce, MAX_GRAPPLE_FORCE, 1f - Mathf.Exp(-GRAPPLE_FORCE_DECAY * delta));
             velocity = velocity.LinearInterpolate(direction * currentGrappleForce, 1f - Mathf.Exp(-GRAPPLE_FORCE_DECAY * delta));
             velocity = MoveAndSlide(velocity);
+        }
+
+        private void EnterStateKnockback()
+        {
+            knockbackTimer.Start();
+            velocity = knockbackDirection * KNOCKBACK_FORCE;
+            grapple.ClearGrapple();
+        }
+
+        private void StateKnockback()
+        {
+            ApplyGravity();
+            velocity.x = Mathf.Lerp(velocity.x, 0f, 1f - Mathf.Exp(-1f * GetProcessDeltaTime()));
+            velocity = MoveAndSlide(velocity);
+
+            if (knockbackTimer.IsStopped())
+            {
+                stateMachine.ChangeState(State.Airborne);
+            }
         }
 
         private Vector2 GetMovementVector()
@@ -122,18 +158,30 @@ namespace Game.GameObject
             return new Vector2(x, y);
         }
 
+        private void ApplyGravity(float multiplier = 1f)
+        {
+            velocity.y += GRAVITY * GetProcessDeltaTime() * multiplier;
+            velocity.y = Mathf.Min(velocity.y, MAX_Y_VELOCITY);
+        }
+
         private void OnGrappleConnected(Vector2 point)
         {
             stateMachine.ChangeState(StateGrappling);
-            currentGrappleForce = 0f;
-            isGrappling = true;
-            connectedPoint = point;
+            grappleConnectedPoint = point;
         }
 
         private void OnGrappleDisconnected()
         {
-            isGrappling = false;
             stateMachine.ChangeState(StateAirborne);
+        }
+
+        private void OnAreaEntered(Area2D otherArea)
+        {
+            if (otherArea.Owner is Enemy enemy)
+            {
+                knockbackDirection = enemy.Direction;
+                stateMachine.ChangeState(StateKnockback);
+            }
         }
     }
 }

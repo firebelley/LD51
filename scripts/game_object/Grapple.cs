@@ -64,6 +64,11 @@ namespace Game.GameObject
             }
         }
 
+        public void ClearGrapple()
+        {
+            line2d.ClearPoints();
+        }
+
         private void UpdateGrapple()
         {
             ClearGrapple();
@@ -93,11 +98,6 @@ namespace Game.GameObject
             }
 
             line2d.Points = wavyPoints.ToArray();
-        }
-
-        private void ClearGrapple()
-        {
-            line2d.ClearPoints();
         }
     }
 }
