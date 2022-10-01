@@ -13,7 +13,8 @@ namespace Game.GameObject
         private const float GRAVITY = 1200f;
         private const float MAX_Y_VELOCITY = 1200f;
         private const float JUMP_GRAVITY_MULTIPLIER = 5f;
-        private const float GRAPPLE_FORCE_DECAY = 5f;
+        private const float GRAPPLE_VELOCITY_GROWTH = 3.5f;
+        private const float GRAPPLE_FORCE_GROWTH = 4f;
         private const float MAX_GRAPPLE_FORCE = 2000f;
         private const float KNOCKBACK_FORCE = 1000f;
 
@@ -22,7 +23,7 @@ namespace Game.GameObject
         [Node]
         private Area2D area2d;
         [Node]
-        private Timer knockbackTimer;
+        private Timer grappleTimer;
         [Node]
         private Node2D visuals;
         [Node]
@@ -81,7 +82,6 @@ namespace Game.GameObject
         {
             stateMachine.Update();
             visuals.Scale = new Vector2(velocity.x > 0 ? 1 : -1, 1);
-            GD.Print(visuals.Scale);
         }
 
         private void StateNormal()
@@ -136,16 +136,24 @@ namespace Game.GameObject
         {
             currentGrappleForce = 0f;
             GlobalPosition += Vector2.Up;
+            grappleTimer.Start();
         }
 
         private void StateGrappling()
         {
             var delta = GetProcessDeltaTime();
             var direction = (grappleConnectedPoint - grapple.GlobalPosition).Normalized();
-            currentGrappleForce = Mathf.Lerp(currentGrappleForce, MAX_GRAPPLE_FORCE, 1f - Mathf.Exp(-GRAPPLE_FORCE_DECAY * delta));
-            velocity = velocity.LinearInterpolate(direction * currentGrappleForce, 1f - Mathf.Exp(-GRAPPLE_FORCE_DECAY * delta));
+            currentGrappleForce = Mathf.Lerp(currentGrappleForce, MAX_GRAPPLE_FORCE, 1f - Mathf.Exp(-GRAPPLE_FORCE_GROWTH * delta));
+
+            var perpendicularForce = Vector2.Zero;
+            if (direction.y < 0)
+            {
+                perpendicularForce = direction.Perpendicular() * 500f * Mathf.Sign(direction.x);
+            }
+
+            velocity = velocity.LinearInterpolate((direction * currentGrappleForce) + perpendicularForce, 1f - Mathf.Exp(-GRAPPLE_VELOCITY_GROWTH * delta));
             velocity = MoveAndSlideWithSnap(velocity, Vector2.Down, Vector2.Up);
-            if (IsOnFloor() || IsOnCeiling() || IsOnWall())
+            if (IsOnFloor() || IsOnCeiling() || IsOnWall() || grappleTimer.IsStopped())
             {
                 GameCamera.Shake();
                 grapple.DisconnectGrapple();
@@ -161,7 +169,7 @@ namespace Game.GameObject
 
         private void EnterStateKnockback()
         {
-            knockbackTimer.Start();
+            // knockbackTimer.Start();
             velocity = knockbackDirection * KNOCKBACK_FORCE;
             grapple.ClearGrapple();
         }
@@ -172,10 +180,10 @@ namespace Game.GameObject
             velocity.x = Mathf.Lerp(velocity.x, 0f, 1f - Mathf.Exp(-1f * GetProcessDeltaTime()));
             velocity = MoveAndSlide(velocity);
 
-            if (knockbackTimer.IsStopped())
-            {
-                stateMachine.ChangeState(State.Airborne);
-            }
+            // if (knockbackTimer.IsStopped())
+            // {
+            //     stateMachine.ChangeState(State.Airborne);
+            // }
         }
 
         private Vector2 GetMovementVector()
