@@ -5,6 +5,9 @@ namespace Game.Entity
 {
     public class Clock : KinematicBody2D
     {
+        [Signal]
+        public delegate void Died();
+
         [Node]
         private Area2D area2d;
 
@@ -25,6 +28,7 @@ namespace Game.Entity
         {
             this.GetAncestor<Main>().SecondsKilled(.5f);
             QueueFree();
+            EmitSignal(nameof(Died));
         }
     }
 }

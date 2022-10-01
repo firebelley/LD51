@@ -1,19 +1,28 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://scripts/Main.cs" type="Script" id=1]
 [ext_resource path="res://resources/tiles.tres" type="TileSet" id=2]
 [ext_resource path="res://scenes/game_object/Player.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/game_object/GameCamera.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/game_object/SpawnArea.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/ui/TimerUI.tscn" type="PackedScene" id=6]
-[ext_resource path="res://scenes/entity/Clock.tscn" type="PackedScene" id=7]
+
+[sub_resource type="RectangleShape2D" id=1]
+resource_local_to_scene = true
+extents = Vector2( 512, 10 )
+
+[sub_resource type="RectangleShape2D" id=2]
+resource_local_to_scene = true
+extents = Vector2( 160, 10 )
+
+[sub_resource type="RectangleShape2D" id=3]
+resource_local_to_scene = true
+extents = Vector2( 176, 10 )
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
 
 [node name="TimerUI" parent="." instance=ExtResource( 6 )]
-
-[node name="Player" parent="." instance=ExtResource( 3 )]
-position = Vector2( -80, 0 )
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource( 2 )
@@ -25,26 +34,22 @@ tile_data = PoolIntArray( -4259901, 0, 0, -4194365, 0, 0, -4128829, 0, 0, -40632
 
 [node name="Enemies" type="Node2D" parent="."]
 
-[node name="Clock" parent="Enemies" instance=ExtResource( 7 )]
-position = Vector2( 8, 32 )
+[node name="Player" parent="." instance=ExtResource( 3 )]
+position = Vector2( -80, 0 )
 
-[node name="Clock2" parent="Enemies" instance=ExtResource( 7 )]
-position = Vector2( 96, 32 )
+[node name="SpawnAreas" type="Node2D" parent="."]
 
-[node name="Clock3" parent="Enemies" instance=ExtResource( 7 )]
-position = Vector2( -48, 32 )
+[node name="SpawnArea" parent="SpawnAreas" instance=ExtResource( 5 )]
+position = Vector2( -16, 32 )
+shape = SubResource( 1 )
 
-[node name="Clock4" parent="Enemies" instance=ExtResource( 7 )]
-position = Vector2( 40, 32 )
+[node name="SpawnArea3" parent="SpawnAreas" instance=ExtResource( 5 )]
+position = Vector2( 288, -544 )
+shape = SubResource( 2 )
 
-[node name="Clock5" parent="Enemies" instance=ExtResource( 7 )]
-position = Vector2( 184, 32 )
+[node name="SpawnArea" parent="SpawnAreas/SpawnArea3" instance=ExtResource( 5 )]
+position = Vector2( 624, -384 )
+shape = SubResource( 3 )
 
-[node name="Clock6" parent="Enemies" instance=ExtResource( 7 )]
-position = Vector2( -136, 32 )
-
-[node name="Clock7" parent="Enemies" instance=ExtResource( 7 )]
-position = Vector2( -96, 32 )
-
-[node name="Clock8" parent="Enemies" instance=ExtResource( 7 )]
-position = Vector2( -200, 32 )
+[node name="SpawnArea2" parent="SpawnAreas" instance=ExtResource( 5 )]
+position = Vector2( -64, -352 )

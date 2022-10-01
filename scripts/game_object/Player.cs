@@ -8,11 +8,11 @@ namespace Game.GameObject
     {
         private const float GROUNDED_SPEED = 200f;
         private const float ACCELERATION = 20f;
-        private const float AIRBORNE_ACCELERATION = 5f;
-        private const float JUMP_FORCE = 428;
+        private const float AIRBORNE_ACCELERATION = 3f;
+        private const float JUMP_FORCE = 600f;
         private const float GRAVITY = 1200f;
         private const float MAX_Y_VELOCITY = 1200f;
-        private const float JUMP_GRAVITY_MULTIPLIER = 3f;
+        private const float JUMP_GRAVITY_MULTIPLIER = 5f;
         private const float GRAPPLE_FORCE_DECAY = 5f;
         private const float MAX_GRAPPLE_FORCE = 2000f;
         private const float KNOCKBACK_FORCE = 1000f;
@@ -23,10 +23,15 @@ namespace Game.GameObject
         private Area2D area2d;
         [Node]
         private Timer knockbackTimer;
+        [Node]
+        private Node2D visuals;
+        [Node]
+        private Sprite sprite;
 
         private Vector2 velocity;
         private Vector2 grappleConnectedPoint;
         private float currentGrappleForce;
+        private bool wasGrounded;
 
         private Vector2 knockbackDirection;
 
@@ -52,8 +57,10 @@ namespace Game.GameObject
         {
             stateMachine.AddState(State.Normal, StateNormal);
             stateMachine.AddState(State.Airborne, StateAirborne);
+            stateMachine.AddLeaveState(State.Airborne, LeaveStateAirborne);
             stateMachine.AddEnterState(State.Grappling, EnterStateGrappling);
             stateMachine.AddState(State.Grappling, StateGrappling);
+            stateMachine.AddLeaveState(State.Grappling, LeaveStateGrappling);
             stateMachine.AddEnterState(State.Knockback, EnterStateKnockback);
             stateMachine.AddState(State.Knockback, StateKnockback);
             stateMachine.SetInitialState(StateAirborne);
@@ -73,6 +80,8 @@ namespace Game.GameObject
         public override void _Process(float delta)
         {
             stateMachine.Update();
+            visuals.Scale = new Vector2(velocity.x > 0 ? 1 : -1, 1);
+            GD.Print(visuals.Scale);
         }
 
         private void StateNormal()
@@ -80,21 +89,15 @@ namespace Game.GameObject
             var delta = GetProcessDeltaTime();
             var moveVec = GetMovementVector();
 
-            velocity.x = Mathf.Lerp(velocity.x, GROUNDED_SPEED * moveVec.x, 1f - Mathf.Exp(-ACCELERATION * delta));
-
-            var gravityMultiplier = 1f;
+            velocity.x = Mathf.Lerp(velocity.x, 0f, 1f - Mathf.Exp(-ACCELERATION * delta));
 
             if (moveVec.y > 0)
             {
                 velocity.y = -JUMP_FORCE;
+                wasGrounded = true;
             }
 
-            if (!Input.IsActionPressed("jump") && velocity.y < 0)
-            {
-                gravityMultiplier = JUMP_GRAVITY_MULTIPLIER;
-            }
-
-            ApplyGravity(gravityMultiplier);
+            ApplyGravity();
             velocity = MoveAndSlideWithSnap(velocity, Vector2.Down, Vector2.Up);
 
             if (!IsOnFloor())
@@ -106,9 +109,15 @@ namespace Game.GameObject
         private void StateAirborne()
         {
             var delta = GetProcessDeltaTime();
-            var moveVec = GetMovementVector();
-            velocity.x = Mathf.Lerp(velocity.x, GROUNDED_SPEED * moveVec.x, 1f - Mathf.Exp(-AIRBORNE_ACCELERATION * delta));
-            ApplyGravity();
+            velocity.x = Mathf.Lerp(velocity.x, 0f, 1f - Mathf.Exp(-AIRBORNE_ACCELERATION * delta));
+
+            var gravityMultiplier = 1f;
+            if (!Input.IsActionPressed("jump") && velocity.y < 0 && wasGrounded)
+            {
+                gravityMultiplier = JUMP_GRAVITY_MULTIPLIER;
+            }
+
+            ApplyGravity(gravityMultiplier);
 
             velocity = MoveAndSlideWithSnap(velocity, Vector2.Down, Vector2.Up);
 
@@ -116,6 +125,11 @@ namespace Game.GameObject
             {
                 stateMachine.ChangeState(StateNormal);
             }
+        }
+
+        private void LeaveStateAirborne()
+        {
+            wasGrounded = false;
         }
 
         private void EnterStateGrappling()
@@ -136,10 +150,13 @@ namespace Game.GameObject
                 GameCamera.Shake();
                 grapple.DisconnectGrapple();
             }
-            else if (grapple.GlobalPosition.DistanceSquaredTo(grappleConnectedPoint) < 32 * 32)
-            {
 
-            }
+            sprite.LookAt(sprite.GlobalPosition - (velocity.Perpendicular() * Mathf.Sign(visuals.Scale.x)));
+        }
+
+        private void LeaveStateGrappling()
+        {
+            sprite.Rotation = 0f;
         }
 
         private void EnterStateKnockback()

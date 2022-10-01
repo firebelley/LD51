@@ -8,6 +8,9 @@ namespace Game
         [Signal]
         public delegate void SecondsChanged(float seconds);
 
+        [Node]
+        public Node2D Enemies { get; private set; }
+
         private float seconds = 60;
         private float Seconds
         {

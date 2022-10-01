@@ -50,7 +50,7 @@ namespace Game.GameObject
 
             var direction = this.GetMouseDirection();
             ClearGrapple();
-            var raycast = GetTree().Root.World2d.DirectSpaceState.Raycast(GlobalPosition, GlobalPosition + (direction * 1000f), null, 1 << 0, true, false);
+            var raycast = GetTree().Root.World2d.DirectSpaceState.Raycast(GlobalPosition, GlobalPosition + (direction * 500f), null, 1 << 0, true, false);
             if (raycast != null)
             {
                 connectedPosition = raycast.Position;
