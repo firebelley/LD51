@@ -35,6 +35,7 @@ namespace Game.GameObject
         {
             if (what == NotificationInstanced)
             {
+                this.AddToGroup();
                 this.WireNodes();
             }
         }

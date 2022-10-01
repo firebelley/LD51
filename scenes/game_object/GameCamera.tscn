@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/node_library/scripts/shaky_camera_2d.gd" type="Script" id=1]
+[ext_resource path="res://scripts/game_object/GameCamera.cs" type="Script" id=2]
+
+[sub_resource type="OpenSimplexNoise" id=1]
+seed = 1070802891
+period = 2.0
+persistence = 0.414
+
+[node name="GameCamera" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="ShakyCamera2D" type="Camera2D" parent="."]
+current = true
+script = ExtResource( 1 )
+shake_noise = SubResource( 1 )
+max_shake_offset = 20
+shake_decay = 5
+shake_frequency = 50
