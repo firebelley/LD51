@@ -6,10 +6,12 @@ namespace Game.GameObject
 {
     public class Grapple : Node2D
     {
-        private const int SEGMENT_LENGTH = 8;
+        private const int SEGMENT_LENGTH = 4;
+        private const float AMP_DECAY = 50f;
+        private const float FREQUENCY_DECAY = 3f;
 
         private float waveAmplitude = 0f;
-        private float waveFrequency = 20f;
+        private float waveFrequency = 0f;
         private Vector2 connectedPosition;
 
         [Node]
@@ -26,7 +28,9 @@ namespace Game.GameObject
         // TODO: amp should be tween
         public override void _Process(float delta)
         {
-            waveAmplitude = Mathf.Max(waveAmplitude - delta, 0f);
+            waveAmplitude = Mathf.Max(waveAmplitude - (delta * AMP_DECAY), 0f);
+            waveFrequency = Mathf.Min(waveFrequency + (delta * FREQUENCY_DECAY), 8f);
+            UpdateGrapple();
         }
 
         public void Shoot()
@@ -37,7 +41,8 @@ namespace Game.GameObject
             if (raycast != null)
             {
                 connectedPosition = raycast.Position;
-                waveAmplitude = 8f;
+                waveAmplitude = 15f;
+                waveFrequency = 4f;
                 UpdateGrapple();
             }
         }
@@ -47,23 +52,31 @@ namespace Game.GameObject
             ClearGrapple();
 
             var straightLineDirection = (connectedPosition - GlobalPosition).Normalized();
+            var perpendicularDirection = straightLineDirection.Perpendicular();
             var length = (connectedPosition - GlobalPosition).Length();
             var segments = Mathf.CeilToInt(length / SEGMENT_LENGTH);
 
             var initialPoint = GlobalPosition;
-            var points = new List<Vector2> {
+            var strictPoints = new List<Vector2> {
+                line2d.ToLocal(initialPoint)
+            };
+            var wavyPoints = new List<Vector2> {
                 line2d.ToLocal(initialPoint)
             };
 
             for (int i = 1; i < segments; i++)
             {
-                var previousPoint = points[i - 1];
-                var strictPoint = previousPoint + (straightLineDirection * SEGMENT_LENGTH);
+                var previousStrictPoint = strictPoints[i - 1];
+                // var previousWavyPoint = wavyPoints[i - 1];
+                var strictPoint = previousStrictPoint + (straightLineDirection * SEGMENT_LENGTH);
 
-                points.Add(strictPoint);
+                var wavyPoint = strictPoint + (perpendicularDirection * Mathf.Sin(i * (Mathf.Pi / waveFrequency)) * waveAmplitude);
+
+                strictPoints.Add(strictPoint);
+                wavyPoints.Add(wavyPoint);
             }
 
-            line2d.Points = points.ToArray();
+            line2d.Points = wavyPoints.ToArray();
         }
 
         private void ClearGrapple()
