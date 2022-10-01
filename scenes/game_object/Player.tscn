@@ -4,9 +4,10 @@
 [ext_resource path="res://scripts/game_object/Player.cs" type="Script" id=2]
 
 [sub_resource type="CircleShape2D" id=1]
-radius = 6.0
+radius = 8.0
 
 [node name="Player" type="KinematicBody2D"]
+collision_layer = 0
 script = ExtResource( 2 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -20,5 +21,5 @@ mouse_filter = 2
 position = Vector2( 0, -16 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -6 )
+position = Vector2( 0, -8 )
 shape = SubResource( 1 )
