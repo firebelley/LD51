@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.Effect;
+using Game.GameObject;
 using Game.Manager;
+using Game.UI;
 using Godot;
 using GodotUtilities;
 
@@ -20,6 +22,10 @@ namespace Game
         public Node2D Entities { get; private set; }
         [Node]
         public TileMap TileMap { get; private set; }
+        [Node]
+        private GameUI gameUi;
+        [Node]
+        private Player player;
 
         private HashSet<Vector2> validTiles = new();
 
@@ -50,7 +56,7 @@ namespace Game
         public override void _Ready()
         {
             validTiles = TileMap.GetUsedCells().Cast<Vector2>().ToHashSet();
-            TurnManager.Connect(nameof(TurnManager.TurnChanged), this, nameof(OnTurnChanged));
+            player.ConnectUI(gameUi);
         }
 
         public HashSet<Vector2> GetValidTiles()
@@ -91,10 +97,6 @@ namespace Game
         public void ClearIndicators()
         {
             GetTree().CallGroup(nameof(ValidIndicator), nameof(ValidIndicator.Die));
-        }
-
-        private void OnTurnChanged()
-        {
         }
     }
 }

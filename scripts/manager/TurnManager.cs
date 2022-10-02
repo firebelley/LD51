@@ -10,7 +10,7 @@ namespace Game.Manager
         [Signal]
         public delegate void EnemyTurnStarted(float isTenthTurn);
         [Signal]
-        public delegate void TurnChanged();
+        public delegate void TurnChanged(int turnCounter);
 
         public bool IsPlayerTurn { get; private set; } = true;
         private int turnCounter;
@@ -38,7 +38,7 @@ namespace Game.Manager
             }
             var isTenthTurn = turnCounter == 10;
 
-            EmitSignal(nameof(TurnChanged));
+            EmitSignal(nameof(TurnChanged), turnCounter);
             EmitSignal(IsPlayerTurn ? nameof(PlayerTurnStarted) : nameof(EnemyTurnStarted), isTenthTurn);
             if (isTenthTurn)
             {

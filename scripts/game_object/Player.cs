@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Game.Effect;
 using Game.Manager;
+using Game.UI;
 using Godot;
 using GodotUtilities;
 
@@ -15,10 +17,13 @@ namespace Game.GameObject
         private AnimationPlayer animationPlayer;
         [Node]
         private Node2D visuals;
+        [Node]
+        private ResourcePreloader resourcePreloader;
 
         private GameBoard gameBoard;
         private SceneTreeTween tween;
         private List<Vector2> validMovementTiles = new();
+        private ShieldIndicator shieldIndicator;
 
         private Vector2[] moveDirections = new Vector2[] {
             Vector2.Right,
@@ -42,6 +47,11 @@ namespace Game.GameObject
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
             gameBoard.TurnManager.Connect(nameof(TurnManager.TurnChanged), this, nameof(OnTurnChanged));
             gameBoard.PlayerTile = gameBoard.WorldToTile(GlobalPosition);
+        }
+
+        public void ConnectUI(GameUI gameUI)
+        {
+            gameUI.Connect(nameof(GameUI.ShieldPressed), this, nameof(OnShieldPressed));
         }
 
         private async Task MoveToTile(Vector2 tile)
@@ -89,22 +99,32 @@ namespace Game.GameObject
         {
             if (gameBoard.EnemyTile == tile)
             {
-                gameBoard.ClearIndicators();
                 GetTree().GetFirstNodeInGroup<Enemy>().Damage();
                 return true;
             }
             else if (validMovementTiles.Contains(tile))
             {
-                gameBoard.ClearIndicators();
                 await MoveToTile(tile);
                 return true;
             }
             return false;
         }
 
+        private void ClearShield()
+        {
+            this.GetFirstNodeOfType<ShieldIndicator>()?.Die();
+        }
+
+        private void EndTurn()
+        {
+            gameBoard.ClearIndicators();
+            gameBoard.TurnManager.EndTurn();
+        }
+
         private void OnPlayerTurnStarted(bool isTenthTurn)
         {
             PopulateValidMovementTiles();
+            ClearShield();
         }
 
         private async void OnTileClicked(Vector2 tile)
@@ -117,13 +137,19 @@ namespace Game.GameObject
             var success = await HandleClick(tile);
             if (success)
             {
-                gameBoard.TurnManager.EndTurn();
+                EndTurn();
             }
         }
 
-        private void OnTurnChanged()
+        private void OnTurnChanged(int turnCount)
         {
             validMovementTiles.Clear();
+        }
+
+        private void OnShieldPressed()
+        {
+            shieldIndicator = resourcePreloader.InstanceSceneOrNull<ShieldIndicator>();
+            AddChild(shieldIndicator);
         }
     }
 }

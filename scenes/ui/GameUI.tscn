@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/ui/AnimatedButton.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/ui/GameUI.cs" type="Script" id=2]
+
+[node name="GameUi" type="CanvasLayer"]
+script = ExtResource( 2 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 0.33
+anchor_bottom = 1.0
+custom_constants/margin_right = 16
+custom_constants/margin_top = 16
+custom_constants/margin_left = 16
+custom_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 201.0
+margin_bottom = 344.0
+
+[node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+margin_right = 185.0
+margin_bottom = 14.0
+text = "Seconds to vulnerability"
+uppercase = true
+
+[node name="TurnLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 185.0
+margin_bottom = 32.0
+text = "10"
+align = 1
+uppercase = true
+
+[node name="ShieldButton" parent="MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
+unique_name_in_owner = true
+margin_left = 67.0
+margin_top = 36.0
+margin_right = 118.0
+margin_bottom = 56.0
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Shield"
