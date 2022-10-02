@@ -7,12 +7,12 @@
 0/texture = ExtResource( 1 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
-0/region = Rect2( 0, 0, 96, 72 )
+0/region = Rect2( 0, 0, 96, 84 )
 0/tile_mode = 1
 0/autotile/bitmask_mode = 1
 0/autotile/bitmask_flags = [  ]
 0/autotile/icon_coordinate = Vector2( 0, 0 )
-0/autotile/tile_size = Vector2( 24, 24 )
+0/autotile/tile_size = Vector2( 24, 28 )
 0/autotile/spacing = 0
 0/autotile/occluder_map = [  ]
 0/autotile/navpoly_map = [  ]

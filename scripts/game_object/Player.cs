@@ -150,6 +150,7 @@ namespace Game.GameObject
         {
             shieldIndicator = resourcePreloader.InstanceSceneOrNull<ShieldIndicator>();
             AddChild(shieldIndicator);
+            EndTurn();
         }
     }
 }
