@@ -6,11 +6,14 @@ namespace Game.Manager
     public class TurnManager : Node
     {
         [Signal]
-        public delegate void PlayerTurnStarted();
+        public delegate void PlayerTurnStarted(float isTenthTurn);
         [Signal]
-        public delegate void EnemyTurnStarted();
+        public delegate void EnemyTurnStarted(float isTenthTurn);
+        [Signal]
+        public delegate void TenthTurnStarted();
 
-        public bool IsPlayerTurn { get; private set; }
+        public bool IsPlayerTurn { get; private set; } = true;
+        private int turnCounter;
 
         public override void _Notification(int what)
         {
@@ -23,13 +26,26 @@ namespace Game.Manager
 
         public override void _Ready()
         {
-            CallDeferred(nameof(EndTurn));
+            CallDeferred(nameof(Init));
         }
 
         public void EndTurn()
         {
             IsPlayerTurn = !IsPlayerTurn;
-            EmitSignal(IsPlayerTurn ? nameof(PlayerTurnStarted) : nameof(EnemyTurnStarted));
+            turnCounter++;
+            var isTenthTurn = turnCounter == 10;
+
+            EmitSignal(IsPlayerTurn ? nameof(PlayerTurnStarted) : nameof(EnemyTurnStarted), isTenthTurn);
+            if (isTenthTurn)
+            {
+                turnCounter = 0;
+                EmitSignal(nameof(TenthTurnStarted));
+            }
+        }
+
+        private void Init()
+        {
+            EmitSignal(nameof(PlayerTurnStarted), false);
         }
     }
 }

@@ -18,6 +18,9 @@ namespace Game
 
         private HashSet<Vector2> validTiles = new();
 
+        public Vector2 PlayerTile;
+        public Vector2 EnemyTile;
+
         public override void _Notification(int what)
         {
             if (what == NotificationInstanced)
