@@ -10,7 +10,6 @@ namespace Game.GameObject
         public delegate void Moved(Vector2 toTile);
 
         private GameBoard gameBoard;
-        private bool hasControl;
 
         public override void _Notification(int what)
         {
@@ -25,16 +24,24 @@ namespace Game.GameObject
             gameBoard = this.GetAncestor<GameBoard>();
             gameBoard.Connect(nameof(GameBoard.TileClicked), this, nameof(OnTileClicked));
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
+            gameBoard.PlayerTile = gameBoard.WorldToTile(GlobalPosition);
         }
 
-        private void OnPlayerTurnStarted()
+        private void OnPlayerTurnStarted(bool isTenthTurn)
         {
             // hasControl = true;
         }
 
         private void OnTileClicked(Vector2 tile, Vector2 globalCenter)
         {
-            GlobalPosition = globalCenter;
+            if (gameBoard.EnemyTile == tile)
+            {
+                GetTree().GetFirstNodeInGroup<Enemy>().Damage();
+            }
+            else
+            {
+                GlobalPosition = globalCenter;
+            }
             gameBoard.TurnManager.EndTurn();
         }
     }

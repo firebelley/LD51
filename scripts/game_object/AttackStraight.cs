@@ -62,7 +62,7 @@ namespace Game.GameObject
             }
         }
 
-        private void OnEnemyTurnStarted()
+        private void OnEnemyTurnStarted(bool isTenthTurn)
         {
             Advance();
         }

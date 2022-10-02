@@ -10,3 +10,4 @@ margin_left = -8.0
 margin_top = -24.0
 margin_right = 8.0
 rect_pivot_offset = Vector2( 8, 12 )
+mouse_filter = 2

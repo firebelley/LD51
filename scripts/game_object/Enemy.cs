@@ -10,11 +10,14 @@ namespace Game.GameObject
         private ResourcePreloader resourcePreloader;
 
         private GameBoard gameBoard;
+        private int health = 2;
+        private bool isInvulnerable = true;
 
         public override void _Notification(int what)
         {
             if (what == NotificationInstanced)
             {
+                this.AddToGroup();
                 this.WireNodes();
             }
         }
@@ -22,7 +25,19 @@ namespace Game.GameObject
         public override void _Ready()
         {
             gameBoard = this.GetAncestor<GameBoard>();
+            gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
             gameBoard.TurnManager.Connect(nameof(TurnManager.EnemyTurnStarted), this, nameof(OnEnemyTurnStarted));
+            gameBoard.EnemyTile = gameBoard.WorldToTile(GlobalPosition);
+        }
+
+        public void Damage()
+        {
+            if (isInvulnerable) return;
+            health--;
+            if (health <= 0)
+            {
+                QueueFree();
+            }
         }
 
         private void DoAttackStraight()
@@ -43,8 +58,20 @@ namespace Game.GameObject
             attack.Direction = chosenDirection;
         }
 
-        private void OnEnemyTurnStarted()
+        private void OnPlayerTurnStarted(bool isTenthTurn)
         {
+            if (isTenthTurn)
+            {
+                isInvulnerable = !isInvulnerable;
+            }
+        }
+
+        private void OnEnemyTurnStarted(bool isTenthTurn)
+        {
+            if (isTenthTurn)
+            {
+                isInvulnerable = !isInvulnerable;
+            }
             DoAttackStraight();
             gameBoard.TurnManager.EndTurn();
         }

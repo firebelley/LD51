@@ -14,4 +14,5 @@ margin_left = -10.0
 margin_top = -28.0
 margin_right = 10.0
 rect_pivot_offset = Vector2( 10, 14 )
+mouse_filter = 2
 color = Color( 0.662745, 0.188235, 0.188235, 1 )
