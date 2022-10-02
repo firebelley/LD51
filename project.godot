@@ -15,7 +15,7 @@ node_library/enable_screen_transition=true
 [application]
 
 config/name="LD51"
-run/main_scene="res://scenes/Main.tscn"
+run/main_scene="res://scenes/Game.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -31,7 +31,8 @@ gdscript/warnings/return_value_discarded=false
 
 [display]
 
-window/size/height=576
+window/size/width=640
+window/size/height=360
 window/size/test_width=1920
 window/size/test_height=1080
 window/stretch/mode="viewport"
