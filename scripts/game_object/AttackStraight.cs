@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Game.Effect;
 using Game.Manager;
 using Godot;
@@ -19,6 +20,7 @@ namespace Game.GameObject
 
         private GameBoard gameBoard;
         private DangerIndicator dangerIndicator;
+        private bool isDying;
 
         public override void _Notification(int what)
         {
@@ -55,8 +57,41 @@ namespace Game.GameObject
             }
         }
 
-        private void Advance()
+        private async void Die()
         {
+            isDying = true;
+            if (IsInstanceValid(dangerIndicator))
+            {
+                dangerIndicator.Die();
+            }
+            await fireball.Die();
+            QueueFree();
+        }
+
+        private bool CheckPlayerCollision()
+        {
+            var tile = gameBoard.WorldToTile(GlobalPosition);
+            var player = GetTree().GetFirstNodeInGroup<Player>();
+            if (player != null && tile == gameBoard.WorldToTile(player.GlobalPosition))
+            {
+                player.Damage();
+                Die();
+                return true;
+            }
+            return false;
+        }
+
+        private async Task MoveToPosition(Vector2 globalPosition)
+        {
+            var tween = CreateTween();
+            tween.TweenProperty(this, "global_position", globalPosition, .3f).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+            await ToSignal(tween, "finished");
+        }
+
+        private async void Advance()
+        {
+            if (isDying) return;
+
             fireball.Start();
             currentTile = nextTile;
 
@@ -67,7 +102,11 @@ namespace Game.GameObject
                 return;
             }
 
-            GlobalPosition = gameBoard.TileToWorld(currentTile.Value);
+            await MoveToPosition(gameBoard.TileToWorld(currentTile.Value));
+            if (CheckPlayerCollision())
+            {
+                return;
+            }
 
             var presumptiveNext = currentTile.Value + Direction;
             if (gameBoard.GetValidTiles().Contains(presumptiveNext))

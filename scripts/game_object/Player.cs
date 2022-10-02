@@ -23,7 +23,10 @@ namespace Game.GameObject
         private GameBoard gameBoard;
         private SceneTreeTween tween;
         private List<Vector2> validMovementTiles = new();
+        private List<Vector2> validEnemyTiles = new();
         private ShieldIndicator shieldIndicator;
+
+        private int health = 3;
 
         private Vector2[] moveDirections = new Vector2[] {
             Vector2.Right,
@@ -36,6 +39,7 @@ namespace Game.GameObject
         {
             if (what == NotificationInstanced)
             {
+                this.AddToGroup();
                 this.WireNodes();
             }
         }
@@ -46,12 +50,16 @@ namespace Game.GameObject
             gameBoard.Connect(nameof(GameBoard.TileClicked), this, nameof(OnTileClicked));
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
             gameBoard.TurnManager.Connect(nameof(TurnManager.TurnChanged), this, nameof(OnTurnChanged));
-            gameBoard.PlayerTile = gameBoard.WorldToTile(GlobalPosition);
         }
 
         public void ConnectUI(GameUI gameUI)
         {
             gameUI.Connect(nameof(GameUI.ShieldPressed), this, nameof(OnShieldPressed));
+        }
+
+        public void Damage()
+        {
+            health--;
         }
 
         private async Task MoveToTile(Vector2 tile)
@@ -79,12 +87,25 @@ namespace Game.GameObject
             foreach (var direction in moveDirections)
             {
                 var newTile = direction + tilePos;
-                if (gameBoard.IsTileValid(newTile))
+                if (gameBoard.IsTileValid(newTile) && !validEnemyTiles.Contains(newTile))
                 {
                     validMovementTiles.Add(newTile);
                 }
             }
             gameBoard.IndicateValidTiles(validMovementTiles.ToArray());
+        }
+
+        private void PopulateValidEnemyTiles()
+        {
+            var tilePos = gameBoard.WorldToTile(GlobalPosition);
+            foreach (var direction in moveDirections)
+            {
+                var newTile = direction + tilePos;
+                if (gameBoard.GetEnemyAtTile(newTile) != null)
+                {
+                    validEnemyTiles.Add(newTile);
+                }
+            }
         }
 
         private void KillTween()
@@ -97,9 +118,9 @@ namespace Game.GameObject
 
         private async Task<bool> HandleClick(Vector2 tile)
         {
-            if (gameBoard.EnemyTile == tile)
+            if (validEnemyTiles.Contains(tile))
             {
-                GetTree().GetFirstNodeInGroup<Enemy>().Damage();
+                gameBoard.GetEnemyAtTile(tile).Damage();
                 return true;
             }
             else if (validMovementTiles.Contains(tile))
@@ -123,6 +144,7 @@ namespace Game.GameObject
 
         private void OnPlayerTurnStarted(bool isTenthTurn)
         {
+            PopulateValidEnemyTiles();
             PopulateValidMovementTiles();
             ClearShield();
         }
@@ -144,6 +166,7 @@ namespace Game.GameObject
         private void OnTurnChanged(int turnCount)
         {
             validMovementTiles.Clear();
+            validEnemyTiles.Clear();
         }
 
         private void OnShieldPressed()

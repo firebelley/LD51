@@ -28,9 +28,7 @@ namespace Game
         private Player player;
 
         private HashSet<Vector2> validTiles = new();
-
-        public Vector2 PlayerTile;
-        public Vector2 EnemyTile;
+        public Dictionary<Vector2, Enemy> EnemyPositions = new();
 
         public override void _Notification(int what)
         {
@@ -97,6 +95,12 @@ namespace Game
         public void ClearIndicators()
         {
             GetTree().CallGroup(nameof(ValidIndicator), nameof(ValidIndicator.Die));
+        }
+
+        public Enemy GetEnemyAtTile(Vector2 tile)
+        {
+            EnemyPositions.TryGetValue(tile, out var enemy);
+            return enemy;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Game.GameObject
             gameBoard = this.GetAncestor<GameBoard>();
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
             gameBoard.TurnManager.Connect(nameof(TurnManager.EnemyTurnStarted), this, nameof(OnEnemyTurnStarted));
-            gameBoard.EnemyTile = gameBoard.WorldToTile(GlobalPosition);
+            gameBoard.EnemyPositions[gameBoard.WorldToTile(GlobalPosition)] = this;
 
             UpdateShield();
         }
@@ -76,6 +76,13 @@ namespace Game.GameObject
             attack.Direction = chosenDirection;
         }
 
+        private async void DoTurn()
+        {
+            DoAttackStraight();
+            await ToSignal(GetTree().CreateTimer(.5f), "timeout");
+            gameBoard.TurnManager.EndTurn();
+        }
+
         private void OnPlayerTurnStarted(bool isTenthTurn)
         {
             if (isTenthTurn)
@@ -91,8 +98,7 @@ namespace Game.GameObject
             {
                 isInvulnerable = !isInvulnerable;
             }
-            DoAttackStraight();
-            gameBoard.TurnManager.EndTurn();
+            DoTurn();
         }
     }
 }
