@@ -33,7 +33,7 @@ namespace Game
                 var tile = MouseToTile();
                 if (validTiles.Contains(tile))
                 {
-                    EmitSignal(nameof(TileClicked), tile, tileMap.MapToWorld(tile) + (tileMap.CellSize / 2f));
+                    EmitSignal(nameof(TileClicked), tile, TileToWorld(tile));
                 }
                 GetTree().SetInputAsHandled();
             }
@@ -52,6 +52,16 @@ namespace Game
         public Vector2 MouseToTile()
         {
             return tileMap.WorldToMap(tileMap.GetGlobalMousePosition());
+        }
+
+        public Vector2 WorldToTile(Vector2 position)
+        {
+            return tileMap.WorldToMap(position);
+        }
+
+        public Vector2 TileToWorld(Vector2 tile)
+        {
+            return tileMap.MapToWorld(tile) + (tileMap.CellSize / 2f);
         }
     }
 }
