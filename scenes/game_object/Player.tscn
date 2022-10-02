@@ -1,13 +1,12 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scripts/game_object/Player.cs" type="Script" id=2]
+[ext_resource path="res://assets/player/player.png" type="Texture" id=3]
 
 [node name="Player" type="Node2D"]
 script = ExtResource( 2 )
 
-[node name="ColorRect" type="ColorRect" parent="."]
-margin_left = -8.0
-margin_top = -24.0
-margin_right = 8.0
-rect_pivot_offset = Vector2( 8, 12 )
-mouse_filter = 2
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 3 )
+centered = false
+offset = Vector2( -8, -24 )
