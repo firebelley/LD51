@@ -9,7 +9,7 @@ namespace Game
     public class GameBoard : Node
     {
         [Signal]
-        public delegate void TileClicked(Vector2 tileClicked, Vector2 globalCenter);
+        public delegate void TileClicked(Vector2 tileClicked);
 
         [Node]
         public TurnManager TurnManager { get; private set; }
@@ -38,7 +38,7 @@ namespace Game
                 var tile = MouseToTile();
                 if (validTiles.Contains(tile))
                 {
-                    EmitSignal(nameof(TileClicked), tile, TileToWorld(tile));
+                    EmitSignal(nameof(TileClicked), tile);
                 }
                 GetTree().SetInputAsHandled();
             }

@@ -11,6 +11,7 @@ script = ExtResource( 1 )
 resources = [ PoolStringArray( "AttackStraight" ), [ ExtResource( 2 ) ] ]
 
 [node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 8, -12 )
 texture = ExtResource( 3 )
 centered = false
-offset = Vector2( -11, -30 )
+offset = Vector2( -19, -14 )

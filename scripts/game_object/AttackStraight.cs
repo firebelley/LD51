@@ -35,12 +35,10 @@ namespace Game.GameObject
 
         private void Initialize()
         {
-            Visible = false;
         }
 
         private void Advance()
         {
-            Visible = true;
             currentTile = nextTile;
 
             if (currentTile == null)
