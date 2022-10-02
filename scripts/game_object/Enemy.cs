@@ -52,7 +52,7 @@ namespace Game.GameObject
             var chosenDirection = directions[chosenDirectionIndex];
             var currentTile = gameBoard.WorldToTile(GlobalPosition);
             var attack = resourcePreloader.InstanceSceneOrNull<AttackStraight>();
-            gameBoard.AddChild(attack);
+            gameBoard.Entities.AddChild(attack);
 
             attack.SetInitialTile(currentTile + chosenDirection);
             attack.Direction = chosenDirection;

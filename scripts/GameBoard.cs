@@ -14,6 +14,8 @@ namespace Game
         [Node]
         public TurnManager TurnManager { get; private set; }
         [Node]
+        public Node2D Entities { get; private set; }
+        [Node]
         private TileMap tileMap;
 
         private HashSet<Vector2> validTiles = new();
