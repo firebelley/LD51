@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://resources/tiles.tres" type="TileSet" id=1]
 [ext_resource path="res://scenes/game_object/Player.tscn" type="PackedScene" id=2]
@@ -6,9 +6,13 @@
 [ext_resource path="res://scenes/game_object/GameCamera.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/manager/TurnManager.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scripts/GameBoard.cs" type="Script" id=6]
+[ext_resource path="res://scenes/effect/ValidIndicator.tscn" type="PackedScene" id=7]
 
 [node name="GameBoard" type="Node"]
 script = ExtResource( 6 )
+
+[node name="ResourcePreloader" type="ResourcePreloader" parent="."]
+resources = [ PoolStringArray( "ValidIndicator" ), [ ExtResource( 7 ) ] ]
 
 [node name="TurnManager" parent="." instance=ExtResource( 5 )]
 
