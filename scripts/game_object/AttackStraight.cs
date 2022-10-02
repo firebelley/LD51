@@ -1,3 +1,4 @@
+using Game.Effect;
 using Game.Manager;
 using Godot;
 using GodotUtilities;
@@ -6,12 +7,18 @@ namespace Game.GameObject
 {
     public class AttackStraight : Node2D
     {
+        [Node]
+        private ResourcePreloader resourcePreloader;
+        [Node]
+        private Fireball fireball;
+
         public Vector2 Direction;
 
         private Vector2? currentTile;
         private Vector2? nextTile;
 
         private GameBoard gameBoard;
+        private DangerIndicator dangerIndicator;
 
         public override void _Notification(int what)
         {
@@ -25,25 +32,38 @@ namespace Game.GameObject
         {
             gameBoard = this.GetAncestor<GameBoard>();
             gameBoard.TurnManager.Connect(nameof(TurnManager.EnemyTurnStarted), this, nameof(OnEnemyTurnStarted));
-            CallDeferred(nameof(Initialize));
         }
 
         public void SetInitialTile(Vector2 initialTile)
         {
             nextTile = initialTile;
+            UpdateDangerIndicator();
         }
 
-        private void Initialize()
+        private void UpdateDangerIndicator()
         {
+            if (IsInstanceValid(dangerIndicator))
+            {
+                dangerIndicator.Die();
+            }
+
+            if (nextTile != null)
+            {
+                dangerIndicator = resourcePreloader.InstanceSceneOrNull<DangerIndicator>();
+                gameBoard.TileMap.AddChild(dangerIndicator);
+                dangerIndicator.GlobalPosition = gameBoard.TileToWorld(nextTile.Value);
+            }
         }
 
         private void Advance()
         {
+            fireball.Start();
             currentTile = nextTile;
 
             if (currentTile == null)
             {
                 QueueFree();
+                UpdateDangerIndicator();
                 return;
             }
 
@@ -58,6 +78,7 @@ namespace Game.GameObject
             {
                 nextTile = null;
             }
+            UpdateDangerIndicator();
         }
 
         private void OnEnemyTurnStarted(bool isTenthTurn)

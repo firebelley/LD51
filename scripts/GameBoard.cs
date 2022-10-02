@@ -19,7 +19,7 @@ namespace Game
         [Node]
         public Node2D Entities { get; private set; }
         [Node]
-        private TileMap tileMap;
+        public TileMap TileMap { get; private set; }
 
         private HashSet<Vector2> validTiles = new();
 
@@ -49,7 +49,7 @@ namespace Game
 
         public override void _Ready()
         {
-            validTiles = tileMap.GetUsedCells().Cast<Vector2>().ToHashSet();
+            validTiles = TileMap.GetUsedCells().Cast<Vector2>().ToHashSet();
             TurnManager.Connect(nameof(TurnManager.TurnChanged), this, nameof(OnTurnChanged));
         }
 
@@ -65,17 +65,17 @@ namespace Game
 
         public Vector2 MouseToTile()
         {
-            return tileMap.WorldToMap(tileMap.GetGlobalMousePosition());
+            return TileMap.WorldToMap(TileMap.GetGlobalMousePosition());
         }
 
         public Vector2 WorldToTile(Vector2 position)
         {
-            return tileMap.WorldToMap(position);
+            return TileMap.WorldToMap(position);
         }
 
         public Vector2 TileToWorld(Vector2 tile)
         {
-            return tileMap.MapToWorld(tile) + (tileMap.CellSize / 2f);
+            return TileMap.MapToWorld(tile) + (TileMap.CellSize / 2f);
         }
 
         public void IndicateValidTiles(Vector2[] tiles)
@@ -83,7 +83,7 @@ namespace Game
             foreach (var tile in tiles)
             {
                 var indicator = resourcePreloader.InstanceSceneOrNull<ValidIndicator>();
-                tileMap.AddChild(indicator);
+                TileMap.AddChild(indicator);
                 indicator.GlobalPosition = TileToWorld(tile);
             }
         }
