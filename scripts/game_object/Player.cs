@@ -35,6 +35,7 @@ namespace Game.GameObject
         private void OnTileClicked(Vector2 tile, Vector2 globalCenter)
         {
             GlobalPosition = globalCenter;
+            gameBoard.TurnManager.EndTurn();
         }
     }
 }
