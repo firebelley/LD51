@@ -15,7 +15,7 @@ node_library/enable_screen_transition=true
 [application]
 
 config/name="LD51"
-run/main_scene="res://scenes/Game.tscn"
+run/main_scene="res://scenes/GameBoard.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -68,7 +68,7 @@ texture={
 
 [input]
 
-grapple={
+click={
 "deadzone": 0.5,
 "events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
  ]
