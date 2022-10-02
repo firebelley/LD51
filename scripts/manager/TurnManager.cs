@@ -32,7 +32,10 @@ namespace Game.Manager
         public void EndTurn()
         {
             IsPlayerTurn = !IsPlayerTurn;
-            turnCounter++;
+            if (IsPlayerTurn)
+            {
+                turnCounter++;
+            }
             var isTenthTurn = turnCounter == 10;
 
             EmitSignal(nameof(TurnChanged));
