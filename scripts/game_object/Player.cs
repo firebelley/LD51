@@ -59,6 +59,7 @@ namespace Game.GameObject
 
         public void Damage()
         {
+            if (IsInstanceValid(shieldIndicator)) return;
             health--;
         }
 

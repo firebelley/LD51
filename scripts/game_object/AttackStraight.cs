@@ -97,8 +97,7 @@ namespace Game.GameObject
 
             if (currentTile == null)
             {
-                QueueFree();
-                UpdateDangerIndicator();
+                Die();
                 return;
             }
 
