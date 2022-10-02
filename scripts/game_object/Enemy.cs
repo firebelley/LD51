@@ -1,3 +1,4 @@
+using Game.Effect;
 using Game.Manager;
 using Godot;
 using GodotUtilities;
@@ -28,6 +29,8 @@ namespace Game.GameObject
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
             gameBoard.TurnManager.Connect(nameof(TurnManager.EnemyTurnStarted), this, nameof(OnEnemyTurnStarted));
             gameBoard.EnemyTile = gameBoard.WorldToTile(GlobalPosition);
+
+            UpdateShield();
         }
 
         public void Damage()
@@ -37,6 +40,20 @@ namespace Game.GameObject
             if (health <= 0)
             {
                 QueueFree();
+            }
+        }
+
+        private void UpdateShield()
+        {
+            if (isInvulnerable)
+            {
+                var shield = resourcePreloader.InstanceSceneOrNull<ShieldIndicator>();
+                AddChild(shield);
+                shield.Position = Vector2.Down * 4f;
+            }
+            else
+            {
+                this.GetFirstNodeOfType<ShieldIndicator>()?.Die();
             }
         }
 
@@ -64,6 +81,7 @@ namespace Game.GameObject
             if (isTenthTurn)
             {
                 isInvulnerable = !isInvulnerable;
+                UpdateShield();
             }
         }
 

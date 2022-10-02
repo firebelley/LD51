@@ -13,6 +13,8 @@ namespace Game.GameObject
 
         [Node]
         private AnimationPlayer animationPlayer;
+        [Node]
+        private Node2D visuals;
 
         private GameBoard gameBoard;
         private SceneTreeTween tween;
@@ -50,6 +52,13 @@ namespace Game.GameObject
             tween = CreateTween();
             tween.TweenProperty(this, "global_position", gameBoard.TileToWorld(tile), .3f).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
             tween.TweenCallback(this, nameof(KillTween));
+
+            var xsign = Mathf.Sign((tile - gameBoard.WorldToTile(GlobalPosition)).x);
+            if (xsign != Mathf.Sign(visuals.Scale.x) && xsign != 0)
+            {
+                var scaleTween = CreateTween();
+                scaleTween.TweenProperty(visuals, "scale", new Vector2(xsign, 1f), .3f).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+            }
 
             await ToSignal(tween, "finished");
         }
