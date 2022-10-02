@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Game.Manager;
 using Godot;
@@ -15,6 +16,14 @@ namespace Game.GameObject
 
         private GameBoard gameBoard;
         private SceneTreeTween tween;
+        private List<Vector2> validMovementTiles = new();
+
+        private Vector2[] moveDirections = new Vector2[] {
+            Vector2.Right,
+            Vector2.Up,
+            Vector2.Left,
+            Vector2.Down
+        };
 
         public override void _Notification(int what)
         {
@@ -29,6 +38,7 @@ namespace Game.GameObject
             gameBoard = this.GetAncestor<GameBoard>();
             gameBoard.Connect(nameof(GameBoard.TileClicked), this, nameof(OnTileClicked));
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
+            gameBoard.TurnManager.Connect(nameof(TurnManager.TurnChanged), this, nameof(OnTurnChanged));
             gameBoard.PlayerTile = gameBoard.WorldToTile(GlobalPosition);
         }
 
@@ -44,26 +54,18 @@ namespace Game.GameObject
             await ToSignal(tween, "finished");
         }
 
-        private void OnPlayerTurnStarted(bool isTenthTurn)
+        private void PopulateValidMovementTiles()
         {
-            // hasControl = true;
-        }
-
-        private async void OnTileClicked(Vector2 tile)
-        {
-            if (tween?.IsValid() == true)
+            var tilePos = gameBoard.WorldToTile(GlobalPosition);
+            foreach (var direction in moveDirections)
             {
-                return;
+                var newTile = direction + tilePos;
+                if (gameBoard.IsTileValid(newTile))
+                {
+                    validMovementTiles.Add(newTile);
+                }
             }
-            if (gameBoard.EnemyTile == tile)
-            {
-                GetTree().GetFirstNodeInGroup<Enemy>().Damage();
-            }
-            else
-            {
-                await MoveToTile(tile);
-            }
-            gameBoard.TurnManager.EndTurn();
+            gameBoard.IndicateValidTiles(validMovementTiles.ToArray());
         }
 
         private void KillTween()
@@ -72,6 +74,47 @@ namespace Game.GameObject
             {
                 tween.Kill();
             }
+        }
+
+        private async Task<bool> HandleClick(Vector2 tile)
+        {
+            if (gameBoard.EnemyTile == tile)
+            {
+                gameBoard.ClearIndicators();
+                GetTree().GetFirstNodeInGroup<Enemy>().Damage();
+                return true;
+            }
+            else if (validMovementTiles.Contains(tile))
+            {
+                gameBoard.ClearIndicators();
+                await MoveToTile(tile);
+                return true;
+            }
+            return false;
+        }
+
+        private void OnPlayerTurnStarted(bool isTenthTurn)
+        {
+            PopulateValidMovementTiles();
+        }
+
+        private async void OnTileClicked(Vector2 tile)
+        {
+            if (tween?.IsValid() == true)
+            {
+                return;
+            }
+
+            var success = await HandleClick(tile);
+            if (success)
+            {
+                gameBoard.TurnManager.EndTurn();
+            }
+        }
+
+        private void OnTurnChanged()
+        {
+            validMovementTiles.Clear();
         }
     }
 }

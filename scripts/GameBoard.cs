@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Game.Effect;
 using Game.Manager;
 using Godot;
 using GodotUtilities;
@@ -11,6 +12,8 @@ namespace Game
         [Signal]
         public delegate void TileClicked(Vector2 tileClicked);
 
+        [Node]
+        private ResourcePreloader resourcePreloader;
         [Node]
         public TurnManager TurnManager { get; private set; }
         [Node]
@@ -47,11 +50,17 @@ namespace Game
         public override void _Ready()
         {
             validTiles = tileMap.GetUsedCells().Cast<Vector2>().ToHashSet();
+            TurnManager.Connect(nameof(TurnManager.TurnChanged), this, nameof(OnTurnChanged));
         }
 
         public HashSet<Vector2> GetValidTiles()
         {
             return validTiles;
+        }
+
+        public bool IsTileValid(Vector2 tile)
+        {
+            return validTiles.Contains(tile);
         }
 
         public Vector2 MouseToTile()
@@ -67,6 +76,25 @@ namespace Game
         public Vector2 TileToWorld(Vector2 tile)
         {
             return tileMap.MapToWorld(tile) + (tileMap.CellSize / 2f);
+        }
+
+        public void IndicateValidTiles(Vector2[] tiles)
+        {
+            foreach (var tile in tiles)
+            {
+                var indicator = resourcePreloader.InstanceSceneOrNull<ValidIndicator>();
+                tileMap.AddChild(indicator);
+                indicator.GlobalPosition = TileToWorld(tile);
+            }
+        }
+
+        public void ClearIndicators()
+        {
+            GetTree().CallGroup(nameof(ValidIndicator), nameof(ValidIndicator.Die));
+        }
+
+        private void OnTurnChanged()
+        {
         }
     }
 }
