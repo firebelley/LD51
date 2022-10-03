@@ -23,6 +23,8 @@ namespace Game.UI
         private HBoxContainer heartContainer;
         [Node]
         private Label headerLabel;
+        [Node]
+        private Button optionsButton;
 
         private GameBoard gameBoard;
         private int shieldCooldown;
@@ -44,6 +46,7 @@ namespace Game.UI
 
             shieldButton.Connect("pressed", this, nameof(OnShieldPressed));
             leapButton.Connect("pressed", this, nameof(OnLeapPressed));
+            optionsButton.Connect("pressed", this, nameof(OnOptionsPressed));
         }
 
         public void ConnectPlayer(Player player)
@@ -81,6 +84,13 @@ namespace Game.UI
             leapCooldown = Mathf.Max(leapCooldown - 1, 0);
             UpdateShieldButton();
             UpdateLeapButton();
+        }
+
+        private async void OnOptionsPressed()
+        {
+            GetNode("/root/ScreenTransition").Call("transition");
+            await ToSignal(GetNode("/root/ScreenTransition"), "transitioned_halfway");
+            GetParent().AddChild(GD.Load<PackedScene>("res://scenes/ui/OptionsMenu.tscn").Instance());
         }
 
         private void OnShieldPressed()
