@@ -14,7 +14,8 @@ node_library/enable_screen_transition=true
 
 [application]
 
-config/name="LD51"
+config/name="Smack Demon"
+config/description="A little game made in 12 hours for Ludum Dare 51."
 run/main_scene="res://scenes/levels/Level1.tscn"
 config/icon="res://icon.png"
 
