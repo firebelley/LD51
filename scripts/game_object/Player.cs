@@ -19,8 +19,6 @@ namespace Game.GameObject
         private Node2D visuals;
         [Node]
         private ResourcePreloader resourcePreloader;
-        [Node]
-        private Sprite sprite;
 
         private GameBoard gameBoard;
         private SceneTreeTween tween;
@@ -110,10 +108,11 @@ namespace Game.GameObject
         private void PopulateValidMovementTiles()
         {
             var tilePos = gameBoard.WorldToTile(GlobalPosition);
+            var attackTiles = gameBoard.GetAttackTiles();
             foreach (var direction in moveDirections)
             {
                 var newTile = direction + tilePos;
-                if (gameBoard.IsTileValid(newTile) && !validEnemyTiles.Contains(newTile))
+                if (gameBoard.IsTileValid(newTile) && !validEnemyTiles.Contains(newTile) && !attackTiles.Contains(newTile))
                 {
                     validMovementTiles.Add(newTile);
                 }

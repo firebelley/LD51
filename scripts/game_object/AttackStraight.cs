@@ -14,6 +14,7 @@ namespace Game.GameObject
         private Fireball fireball;
 
         public Vector2 Direction;
+        public bool IsActive => currentTile != null;
 
         private Vector2? currentTile;
         private Vector2? nextTile;
@@ -22,10 +23,13 @@ namespace Game.GameObject
         private DangerIndicator dangerIndicator;
         private bool isDying;
 
+        public Vector2 DamagePosition => fireball.GlobalPosition;
+
         public override void _Notification(int what)
         {
             if (what == NotificationInstanced)
             {
+                this.AddToGroup();
                 this.WireNodes();
             }
         }

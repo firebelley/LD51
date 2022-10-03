@@ -28,7 +28,7 @@ namespace Game
         private Player player;
 
         private HashSet<Vector2> validTiles = new();
-        public Dictionary<Vector2, Enemy> EnemyPositions = new();
+        public Dictionary<Enemy, Vector2> EnemyPositions = new();
 
         public override void _Notification(int what)
         {
@@ -99,8 +99,46 @@ namespace Game
 
         public Enemy GetEnemyAtTile(Vector2 tile)
         {
-            EnemyPositions.TryGetValue(tile, out var enemy);
+            var positionToEnemy = EnemyPositions.ToDictionary((x) => x.Value, (y) => y.Key);
+            positionToEnemy.TryGetValue(tile, out var enemy);
             return enemy;
+        }
+
+        public HashSet<Vector2> GetAttackTiles()
+        {
+            var hashSet = new HashSet<Vector2>();
+            foreach (var attack in GetTree().GetNodesInGroup<AttackStraight>())
+            {
+                if (!attack.IsActive) continue;
+                hashSet.Add(WorldToTile(attack.DamagePosition));
+            }
+            return hashSet;
+        }
+
+        public Vector2[] GetEmptyTiles()
+        {
+            var occupiedTiles = GetAttackTiles();
+
+            var player = GetTree().GetFirstNodeInGroup<Player>();
+            if (player != null)
+            {
+                occupiedTiles.Add(WorldToTile(player.GlobalPosition));
+            }
+
+            foreach (var enemy in GetTree().GetNodesInGroup<Enemy>())
+            {
+                occupiedTiles.Add(WorldToTile(enemy.GlobalPosition));
+            }
+
+            var emptyTiles = new List<Vector2>();
+            foreach (var cell in TileMap.GetUsedCells().Cast<Vector2>())
+            {
+                if (!occupiedTiles.Contains(cell))
+                {
+                    emptyTiles.Add(cell);
+                }
+            }
+            return emptyTiles.ToArray();
         }
     }
 }

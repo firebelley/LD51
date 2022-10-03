@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Game.Effect;
 using Game.Manager;
 using Godot;
@@ -11,10 +12,13 @@ namespace Game.GameObject
     {
         [Node]
         private ResourcePreloader resourcePreloader;
+        [Node]
+        private AnimationPlayer animationPlayer;
 
         private GameBoard gameBoard;
         private int health = 2;
         private bool isInvulnerable = true;
+        private bool wasHit = false;
         private Vector2 lastDirection;
 
         private enum AttackType
@@ -43,7 +47,8 @@ namespace Game.GameObject
             gameBoard = this.GetAncestor<GameBoard>();
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
             gameBoard.TurnManager.Connect(nameof(TurnManager.EnemyTurnStarted), this, nameof(OnEnemyTurnStarted));
-            gameBoard.EnemyPositions[gameBoard.WorldToTile(GlobalPosition)] = this;
+
+            UpdatePosition();
 
             UpdateShield();
         }
@@ -51,6 +56,7 @@ namespace Game.GameObject
         public void Damage()
         {
             GameCamera.Shake();
+            wasHit = true;
             if (isInvulnerable) return;
             health--;
             if (health <= 0)
@@ -71,6 +77,12 @@ namespace Game.GameObject
             {
                 this.GetFirstNodeOfType<ShieldIndicator>()?.Die();
             }
+        }
+
+        private void UpdatePosition()
+        {
+
+            gameBoard.EnemyPositions[this] = gameBoard.WorldToTile(GlobalPosition);
         }
 
         private void DoAttackStraight()
@@ -123,10 +135,36 @@ namespace Game.GameObject
             lastDirection = chosenDirection;
         }
 
+        private async Task DoTeleport()
+        {
+            var emptyTiles = gameBoard.GetEmptyTiles();
+            if (emptyTiles.Length == 0) return;
+
+            var index = MathUtil.RNG.RandiRange(0, emptyTiles.Length - 1);
+            var destinationTile = emptyTiles[index];
+
+            animationPlayer.Play("teleport_out");
+            await ToSignal(animationPlayer, "animation_finished");
+
+            GlobalPosition = gameBoard.TileToWorld(destinationTile);
+            UpdatePosition();
+            animationPlayer.Play("teleport_in");
+            await ToSignal(animationPlayer, "animation_finished");
+        }
+
         private async void DoTurn()
         {
-            DoAttackStraight();
-            await ToSignal(GetTree().CreateTimer(.5f), "timeout");
+            if (wasHit)
+            {
+                await DoTeleport();
+            }
+            else
+            {
+                DoAttackStraight();
+            }
+            await ToSignal(GetTree().CreateTimer(.4f), "timeout");
+
+            wasHit = false;
             gameBoard.TurnManager.EndTurn();
         }
 

@@ -1,18 +1,71 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/game_object/Enemy.cs" type="Script" id=1]
 [ext_resource path="res://scenes/game_object/AttackStraight.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/enemy/enemy.png" type="Texture" id=3]
 [ext_resource path="res://scenes/effect/ShieldIndicator.tscn" type="PackedScene" id=4]
 
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "teleport_in"
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 2 ), Vector2( 0.8, 2 ), Vector2( 2, 0.6 ), Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=1]
+resource_name = "teleport_out"
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.05, 0.15, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 2, 0.5 ), Vector2( 0.8, 2 ), Vector2( 0, 2 ) ]
+}
+
 [node name="Enemy" type="Node2D"]
 script = ExtResource( 1 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 2 )
+anims/teleport_in = SubResource( 3 )
+anims/teleport_out = SubResource( 1 )
 
 [node name="ResourcePreloader" type="ResourcePreloader" parent="."]
 resources = [ PoolStringArray( "AttackStraight", "ShieldIndicator" ), [ ExtResource( 2 ), ExtResource( 4 ) ] ]
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( 8, -12 )
 texture = ExtResource( 3 )
 centered = false
-offset = Vector2( -19, -14 )
+offset = Vector2( -11, -26 )
