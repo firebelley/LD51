@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Game.Effect;
 using Game.Manager;
 using Godot;
@@ -13,6 +15,19 @@ namespace Game.GameObject
         private GameBoard gameBoard;
         private int health = 2;
         private bool isInvulnerable = true;
+        private Vector2 lastDirection;
+
+        private enum AttackType
+        {
+            Line,
+            Wall
+        }
+
+        private AttackType[] attackTypes = new AttackType[] {
+            AttackType.Line,
+            AttackType.Line,
+            AttackType.Wall
+        };
 
         public override void _Notification(int what)
         {
@@ -65,15 +80,46 @@ namespace Game.GameObject
                 Vector2.Down,
                 Vector2.Right
             };
+            directions = directions.Where(x => x != lastDirection).ToArray();
+
             var chosenDirectionIndex = MathUtil.RNG.RandiRange(0, directions.Length - 1);
             var chosenDirection = directions[chosenDirectionIndex];
-            var currentTile = gameBoard.WorldToTile(GlobalPosition);
-            var attack = resourcePreloader.InstanceSceneOrNull<AttackStraight>();
-            gameBoard.Entities.AddChild(attack);
-            attack.GlobalPosition = gameBoard.TileToWorld(currentTile + chosenDirection);
 
-            attack.SetInitialTile(currentTile + chosenDirection);
-            attack.Direction = chosenDirection;
+            var chosenAttackIndex = MathUtil.RNG.RandiRange(0, attackTypes.Length - 1);
+            var chosenAttack = attackTypes[chosenAttackIndex];
+
+            var currentTile = gameBoard.WorldToTile(GlobalPosition);
+
+            var attackSquares = new List<Vector2>();
+            var attackCount = chosenAttack == AttackType.Line ? 1 : 3;
+
+            var rootTile = currentTile + chosenDirection;
+            for (int i = 0; i < attackCount; i++)
+            {
+                if (i == 0)
+                {
+                    attackSquares.Add(rootTile);
+                    continue;
+                }
+                var perp = chosenDirection.Perpendicular();
+                if (i == 2)
+                {
+                    perp *= -1;
+                }
+
+                attackSquares.Add(rootTile + perp);
+            }
+
+            foreach (var attackSquare in attackSquares)
+            {
+                var attack = resourcePreloader.InstanceSceneOrNull<AttackStraight>();
+                gameBoard.Entities.AddChild(attack);
+                attack.GlobalPosition = gameBoard.TileToWorld(attackSquare);
+                attack.SetInitialTile(attackSquare);
+                attack.Direction = chosenDirection;
+            }
+
+            lastDirection = chosenDirection;
         }
 
         private async void DoTurn()
@@ -94,6 +140,7 @@ namespace Game.GameObject
 
         private void OnEnemyTurnStarted(bool isTenthTurn)
         {
+            if (IsQueuedForDeletion()) return;
             if (isTenthTurn)
             {
                 isInvulnerable = !isInvulnerable;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using Game.Effect;
 using Game.Manager;
@@ -27,6 +28,7 @@ namespace Game.GameObject
         private ShieldIndicator shieldIndicator;
 
         private int health = 3;
+        private bool isActing = false;
 
         private Vector2[] moveDirections = new Vector2[] {
             Vector2.Right,
@@ -119,6 +121,7 @@ namespace Game.GameObject
 
         private async Task<bool> HandleClick(Vector2 tile)
         {
+            isActing = true;
             if (validEnemyTiles.Contains(tile))
             {
                 gameBoard.GetEnemyAtTile(tile).Damage();
@@ -158,6 +161,7 @@ namespace Game.GameObject
             }
 
             var success = await HandleClick(tile);
+            isActing = false;
             if (success)
             {
                 EndTurn();
@@ -172,6 +176,7 @@ namespace Game.GameObject
 
         private void OnShieldPressed()
         {
+            if (isActing) return;
             shieldIndicator = resourcePreloader.InstanceSceneOrNull<ShieldIndicator>();
             AddChild(shieldIndicator);
             EndTurn();
