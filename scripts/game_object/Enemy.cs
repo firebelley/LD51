@@ -43,6 +43,13 @@ namespace Game.GameObject
             AttackType.Wall
         };
 
+        private Vector2[] directions = new Vector2[] {
+            Vector2.Right,
+            Vector2.Up,
+            Vector2.Left,
+            Vector2.Down
+        };
+
         private static int turns;
 
         public override void _Notification(int what)
@@ -179,6 +186,18 @@ namespace Game.GameObject
         private async Task DoTeleport()
         {
             var emptyTiles = gameBoard.GetEmptyTiles();
+            var emptyHash = emptyTiles.ToHashSet();
+            emptyTiles = emptyTiles.Where((x) =>
+            {
+                foreach (var dir in directions)
+                {
+                    if (!emptyHash.Contains(x + dir))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }).ToArray();
             if (emptyTiles.Length == 0) return;
 
             var index = MathUtil.RNG.RandiRange(0, emptyTiles.Length - 1);
