@@ -42,7 +42,6 @@ namespace Game.Manager
 
         private void Switch()
         {
-            GetNode("/root/ScreenTransition").Call("set_transition_color", transitionColor);
             if (currentLevel >= levels.Length)
             {
                 GetNode("/root/ScreenTransition").Call("transition_to_scene", "res://scenes/ui/Complete.tscn");

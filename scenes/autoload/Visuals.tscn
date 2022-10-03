@@ -4,4 +4,5 @@
 
 [node name="Visuals" type="Node"]
 script = ExtResource( 1 )
-clearColor = Color( 0.298039, 0.298039, 0.298039, 1 )
+clearColor = Color( 0.0666667, 0.0196078, 0.141176, 1 )
+transitionColor = Color( 0.0666667, 0.0196078, 0.141176, 1 )

@@ -6,15 +6,19 @@ namespace Game
     public class OptionsMenu : CanvasLayer
     {
         [Node]
-        private HSlider SFXSlider;
+        private Button sfxUpButton;
         [Node]
-        private HSlider musicSlider;
+        private Button sfxDownButton;
+        [Node]
+        private Button musicUpButton;
+        [Node]
+        private Button musicDownButton;
+        [Node]
+        private Label sfxLabel;
+        [Node]
+        private Label musicLabel;
         [Node]
         private Button backButton;
-        [Node]
-        private Button windowButton;
-        [Node]
-        private Control windowContainer;
 
         public override void _Notification(int what)
         {
@@ -26,25 +30,19 @@ namespace Game
 
         public override void _Ready()
         {
-            SFXSlider.Value = GetBusVolume("sfx");
-            musicSlider.Value = GetBusVolume("music");
-
-            SFXSlider.Connect("value_changed", this, nameof(OnSfxChanged));
-            musicSlider.Connect("value_changed", this, nameof(OnMusicChanged));
+            sfxUpButton.Connect("pressed", this, nameof(OnVolumeChanged), new Godot.Collections.Array { "sfx", 1 });
+            sfxDownButton.Connect("pressed", this, nameof(OnVolumeChanged), new Godot.Collections.Array { "sfx", -1 });
+            musicUpButton.Connect("pressed", this, nameof(OnVolumeChanged), new Godot.Collections.Array { "music", 1 });
+            musicDownButton.Connect("pressed", this, nameof(OnVolumeChanged), new Godot.Collections.Array { "music", -1 });
             backButton.Connect("pressed", this, nameof(OnBackButtonPressed));
-            windowButton.Connect("pressed", this, nameof(OnWindowButtonPressed));
 
             UpdateText();
-
-            if (OS.HasFeature("HTML5"))
-            {
-                windowContainer.QueueFree();
-            }
         }
 
         private void UpdateText()
         {
-            windowButton.Text = OS.WindowFullscreen ? "Fullscreen" : "Windowed";
+            sfxLabel.Text = Mathf.Round(GetBusVolume("sfx") * 10f).ToString();
+            musicLabel.Text = Mathf.Round(GetBusVolume("music") * 10f).ToString();
         }
 
         private float GetBusVolume(string busName)
@@ -62,14 +60,12 @@ namespace Game
             AudioServer.SetBusVolumeDb(busIdx, db);
         }
 
-        private void OnSfxChanged(float val)
+        private void OnVolumeChanged(string bus, int change)
         {
-            SetBusVolume("sfx", val);
-        }
-
-        private void OnMusicChanged(float val)
-        {
-            SetBusVolume("music", val);
+            var busVolume = Mathf.Round(GetBusVolume(bus) * 10);
+            busVolume = Mathf.Clamp(busVolume + change, 0, 10);
+            SetBusVolume(bus, busVolume / 10f);
+            UpdateText();
         }
 
         private async void OnBackButtonPressed()
@@ -77,12 +73,6 @@ namespace Game
             GetNode("/root/ScreenTransition").Call("transition");
             await ToSignal(GetNode("/root/ScreenTransition"), "transitioned_halfway");
             QueueFree();
-        }
-
-        private void OnWindowButtonPressed()
-        {
-            OS.WindowFullscreen = !OS.WindowFullscreen;
-            UpdateText();
         }
     }
 }
