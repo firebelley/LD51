@@ -36,10 +36,13 @@ namespace Game.GameObject
             AttackType.Wall
         };
 
+        private static int turns;
+
         public override void _Notification(int what)
         {
             if (what == NotificationInstanced)
             {
+                turns = 0;
                 this.AddToGroup();
                 this.WireNodes();
             }
@@ -176,7 +179,11 @@ namespace Game.GameObject
             await ToSignal(GetTree().CreateTimer(.4f), "timeout");
 
             wasHit = false;
-            gameBoard.TurnManager.EndTurn();
+            turns--;
+            if (turns == 0)
+            {
+                gameBoard.TurnManager.EndTurn();
+            }
         }
 
         private void OnPlayerTurnStarted(bool isTenthTurn)
@@ -191,6 +198,7 @@ namespace Game.GameObject
         private void OnEnemyTurnStarted(bool isTenthTurn)
         {
             if (IsQueuedForDeletion()) return;
+            turns++;
             if (isTenthTurn)
             {
                 isInvulnerable = !isInvulnerable;
