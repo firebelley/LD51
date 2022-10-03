@@ -60,13 +60,23 @@ margin_left = 104.0
 margin_right = 120.0
 margin_bottom = 268.0
 
-[node name="ShieldButton" parent="MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
-unique_name_in_owner = true
-margin_left = 80.0
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 margin_top = 308.0
-margin_right = 104.0
+margin_right = 185.0
 margin_bottom = 328.0
+
+[node name="ShieldButton" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 1 )]
+unique_name_in_owner = true
+margin_right = 24.0
 size_flags_horizontal = 4
 size_flags_vertical = 0
 text = ""
 icon = ExtResource( 4 )
+
+[node name="LeapButton" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 1 )]
+unique_name_in_owner = true
+margin_left = 28.0
+margin_right = 70.0
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Leap"

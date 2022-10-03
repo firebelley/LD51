@@ -10,16 +10,21 @@ namespace Game.UI
     {
         [Signal]
         public delegate void ShieldPressed();
+        [Signal]
+        public delegate void LeapPressed();
 
         [Node]
         private Label turnLabel;
         [Node]
         private Button shieldButton;
         [Node]
+        private Button leapButton;
+        [Node]
         private HBoxContainer heartContainer;
 
         private GameBoard gameBoard;
         private int shieldCooldown;
+        private int leapCooldown;
 
         public override void _Notification(int what)
         {
@@ -36,6 +41,7 @@ namespace Game.UI
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
 
             shieldButton.Connect("pressed", this, nameof(OnShieldPressed));
+            leapButton.Connect("pressed", this, nameof(OnLeapPressed));
         }
 
         public void ConnectPlayer(Player player)
@@ -49,6 +55,12 @@ namespace Game.UI
             shieldButton.Disabled = !gameBoard.TurnManager.IsPlayerTurn || shieldCooldown > 0;
         }
 
+        private void UpdateLeapButton()
+        {
+            leapButton.Text = leapCooldown > 0 ? $"({leapCooldown})" : "Leap";
+            leapButton.Disabled = !gameBoard.TurnManager.IsPlayerTurn || leapCooldown > 0;
+        }
+
         private void OnTurnChanged(int turnCount)
         {
             turnLabel.Text = (10 - turnCount).ToString();
@@ -58,7 +70,9 @@ namespace Game.UI
         private void OnPlayerTurnStarted(object _)
         {
             shieldCooldown = Mathf.Max(shieldCooldown - 1, 0);
+            leapCooldown = Mathf.Max(leapCooldown - 1, 0);
             UpdateShieldButton();
+            UpdateLeapButton();
         }
 
         private void OnShieldPressed()
@@ -66,6 +80,13 @@ namespace Game.UI
             shieldCooldown = 3;
             UpdateShieldButton();
             EmitSignal(nameof(ShieldPressed));
+        }
+
+        private void OnLeapPressed()
+        {
+            leapCooldown = 4;
+            UpdateLeapButton();
+            EmitSignal(nameof(LeapPressed));
         }
 
         private void OnPlayerDamaged()

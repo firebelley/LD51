@@ -175,4 +175,4 @@ unique_name_in_owner = true
 position = Vector2( 0, 4 )
 texture = ExtResource( 3 )
 centered = false
-offset = Vector2( -6, -24 )
+offset = Vector2( -8, -24 )

@@ -64,6 +64,7 @@ namespace Game.GameObject
         public void ConnectUI(GameUI gameUI)
         {
             gameUI.Connect(nameof(GameUI.ShieldPressed), this, nameof(OnShieldPressed));
+            gameUI.Connect(nameof(GameUI.LeapPressed), this, nameof(OnLeapPressed));
             gameUI.ConnectPlayer(this);
         }
 
@@ -87,6 +88,7 @@ namespace Game.GameObject
             FaceTile(tile);
 
             await ToSignal(tween, "finished");
+            animationPlayer.Play("idle");
         }
 
 
@@ -104,6 +106,7 @@ namespace Game.GameObject
             FaceTile(tile);
 
             await ToSignal(tween, "finished");
+            animationPlayer.Play("idle");
         }
 
         private void FaceTile(Vector2 tile)
@@ -116,13 +119,14 @@ namespace Game.GameObject
             }
         }
 
-        private void PopulateValidMovementTiles()
+        private void PopulateValidMovementTiles(int range = 1)
         {
+            validMovementTiles.Clear();
             var tilePos = gameBoard.WorldToTile(GlobalPosition);
             var attackTiles = gameBoard.GetAttackTiles();
             foreach (var direction in moveDirections)
             {
-                var newTile = direction + tilePos;
+                var newTile = (direction * range) + tilePos;
                 if (gameBoard.IsTileValid(newTile) && !validEnemyTiles.Contains(newTile) && !attackTiles.Contains(newTile))
                 {
                     validMovementTiles.Add(newTile);
@@ -213,6 +217,12 @@ namespace Game.GameObject
             shieldIndicator = resourcePreloader.InstanceSceneOrNull<ShieldIndicator>();
             AddChild(shieldIndicator);
             EndTurn();
+        }
+
+        private void OnLeapPressed()
+        {
+            gameBoard.ClearIndicators();
+            PopulateValidMovementTiles(3);
         }
 
         private async void OnEnemyDied()

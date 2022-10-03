@@ -15,7 +15,7 @@ node_library/enable_screen_transition=true
 [application]
 
 config/name="LD51"
-run/main_scene="res://scenes/ui/MainMenu.tscn"
+run/main_scene="res://scenes/levels/Level1.tscn"
 config/icon="res://icon.png"
 
 [autoload]
