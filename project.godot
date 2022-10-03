@@ -15,7 +15,7 @@ node_library/enable_screen_transition=true
 [application]
 
 config/name="LD51"
-run/main_scene="res://scenes/GameBoard.tscn"
+run/main_scene="res://scenes/ui/MainMenu.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -23,6 +23,7 @@ config/icon="res://icon.png"
 ScreenTransition="*res://addons/node_library/scenes/ScreenTransition.tscn"
 MusicPlayer="*res://scenes/autoload/MusicPlayer.tscn"
 Visuals="*res://scenes/autoload/Visuals.tscn"
+LevelManager="*res://scenes/manager/LevelManager.tscn"
 
 [debug]
 
