@@ -39,6 +39,8 @@ namespace Game.GameObject
         private int enemyCount;
         private bool IsDying => health <= 0;
 
+        private TileCursor tileCursor;
+
         private Vector2[] moveDirections = new Vector2[] {
             Vector2.Right,
             Vector2.Up,
@@ -66,26 +68,34 @@ namespace Game.GameObject
                 enemyCount++;
                 enemy.Connect(nameof(Enemy.Died), this, nameof(OnEnemyDied));
             }
+
+            tileCursor = resourcePreloader.InstanceSceneOrNull<TileCursor>();
+            gameBoard.TileMap.AddChild(tileCursor);
         }
 
         public override void _Process(float delta)
         {
+            var mouseTile = gameBoard.WorldToTile(GetGlobalMousePosition());
             if (gameBoard.TurnManager.IsPlayerTurn)
             {
-                var mouseTile = gameBoard.WorldToTile(GetGlobalMousePosition());
                 if (validEnemyTiles.Contains(mouseTile))
                 {
                     Cursor.UseAttack();
+                    tileCursor.SetValid(true);
                 }
                 else
                 {
+                    tileCursor.SetValid(validMovementTiles.Contains(mouseTile));
                     Cursor.UseNormal();
                 }
             }
             else
             {
                 Cursor.UseNormal();
+                tileCursor.SetValid(false);
             }
+            tileCursor.Visible = gameBoard.GetValidTiles().Contains(mouseTile);
+            tileCursor.GlobalPosition = gameBoard.TileToWorld(mouseTile);
         }
 
         public void ConnectUI(GameUI gameUI)
