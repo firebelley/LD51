@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scenes/GameBoard.tscn" type="PackedScene" id=1]
+[ext_resource path="res://resources/theme.tres" type="Theme" id=2]
 
 [node name="Level1" instance=ExtResource( 1 )]
 
@@ -15,3 +16,37 @@ position = Vector2( 36, 108 )
 
 [node name="Enemy" parent="Entities" index="1"]
 position = Vector2( 156, 108 )
+
+[node name="Label" type="Label" parent="." index="9"]
+margin_left = -156.0
+margin_top = 60.0
+margin_right = -13.0
+margin_bottom = 97.0
+rect_rotation = -7.36859
+theme = ExtResource( 2 )
+text = "SMACK THE DEMON
+WITH YOUR SWORD"
+align = 1
+
+[node name="Label3" type="Label" parent="." index="10"]
+margin_left = 228.0
+margin_top = 84.0
+margin_right = 379.0
+margin_bottom = 141.0
+rect_rotation = 0.926852
+theme = ExtResource( 2 )
+text = "IT CYCLES
+VULNERABILITY
+EVERY 10 SECONDS"
+align = 1
+
+[node name="Label2" type="Label" parent="." index="11"]
+margin_left = 204.0
+margin_top = 228.0
+margin_right = 347.0
+margin_bottom = 265.0
+rect_rotation = 7.22666
+theme = ExtResource( 2 )
+text = "USE YOUR
+ABILITIES"
+align = 1

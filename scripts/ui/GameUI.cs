@@ -53,13 +53,13 @@ namespace Game.UI
 
         private void UpdateShieldButton()
         {
-            shieldButton.Text = shieldCooldown > 0 ? $"({shieldCooldown})" : "Shield";
+            shieldButton.Text = shieldCooldown > 0 ? $"({shieldCooldown})" : "SHIELD";
             shieldButton.Disabled = !gameBoard.TurnManager.IsPlayerTurn || shieldCooldown > 0;
         }
 
         private void UpdateLeapButton()
         {
-            leapButton.Text = leapCooldown > 0 ? $"({leapCooldown})" : "Leap";
+            leapButton.Text = leapCooldown > 0 ? $"({leapCooldown})" : "LEAP";
             leapButton.Disabled = !gameBoard.TurnManager.IsPlayerTurn || leapCooldown > 0;
         }
 

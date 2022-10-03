@@ -62,29 +62,29 @@ custom_constants/separation = 8
 alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
-margin_left = 231.0
-margin_right = 393.0
+margin_left = 227.0
+margin_right = 396.0
 margin_bottom = 25.0
 size_flags_horizontal = 4
 alignment = 1
 
 [node name="ShieldButton" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 1 )]
 unique_name_in_owner = true
-margin_right = 85.0
+margin_right = 90.0
 margin_bottom = 25.0
 size_flags_horizontal = 4
 size_flags_vertical = 0
-text = "Shield"
+text = "SHIELD"
 icon = ExtResource( 4 )
 
 [node name="LeapButton" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 1 )]
 unique_name_in_owner = true
-margin_left = 89.0
-margin_right = 162.0
+margin_left = 94.0
+margin_right = 169.0
 margin_bottom = 25.0
 size_flags_horizontal = 4
 size_flags_vertical = 0
-text = "Leap"
+text = "LEAP"
 icon = ExtResource( 7 )
 
 [node name="HeartContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]

@@ -39,13 +39,13 @@ namespace Game.Manager
             }
             var isTenthTurn = turnCounter == 5;
 
-            EmitSignal(nameof(TurnChanged), turnCounter);
-            EmitSignal(IsPlayerTurn ? nameof(PlayerTurnStarted) : nameof(EnemyTurnStarted), isTenthTurn);
             if (isTenthTurn)
             {
                 IsInvulnerabilityStage = !IsInvulnerabilityStage;
                 turnCounter = 0;
             }
+            EmitSignal(nameof(TurnChanged), turnCounter);
+            EmitSignal(IsPlayerTurn ? nameof(PlayerTurnStarted) : nameof(EnemyTurnStarted), isTenthTurn);
         }
 
         private void Init()
