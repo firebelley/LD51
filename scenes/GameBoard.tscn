@@ -31,7 +31,7 @@ cell_size = Vector2( 24, 24 )
 format = 1
 
 [node name="GameCamera" parent="." instance=ExtResource( 4 )]
-position = Vector2( 0, 120 )
+position = Vector2( 108, 108 )
 
 [node name="Entities" type="YSort" parent="."]
 

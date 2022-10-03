@@ -55,7 +55,6 @@ namespace Game.GameObject
             gameBoard.TurnManager.Connect(nameof(TurnManager.EnemyTurnStarted), this, nameof(OnEnemyTurnStarted));
 
             UpdatePosition();
-
             UpdateShield();
         }
 
@@ -67,6 +66,7 @@ namespace Game.GameObject
             health--;
             if (health <= 0)
             {
+                gameBoard.EnemyPositions.Remove(this);
                 EmitSignal(nameof(Died));
                 QueueFree();
             }
