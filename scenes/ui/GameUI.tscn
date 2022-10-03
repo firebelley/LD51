@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://scenes/ui/AnimatedButton.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/ui/GameUI.cs" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://resources/theme.tres" type="Theme" id=5]
 [ext_resource path="res://resources/Peaberry-Bold.ttf" type="DynamicFontData" id=6]
 [ext_resource path="res://assets/effect/boot.png" type="Texture" id=7]
+[ext_resource path="res://assets/effect/skip.png" type="Texture" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 size = 32
@@ -72,8 +73,8 @@ custom_constants/separation = 8
 alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
-margin_left = 227.0
-margin_right = 396.0
+margin_left = 187.0
+margin_right = 436.0
 margin_bottom = 25.0
 size_flags_horizontal = 4
 alignment = 1
@@ -96,6 +97,16 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 text = "LEAP"
 icon = ExtResource( 7 )
+
+[node name="SkipButton" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 1 )]
+unique_name_in_owner = true
+margin_left = 173.0
+margin_right = 249.0
+margin_bottom = 25.0
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "SKIP"
+icon = ExtResource( 8 )
 
 [node name="HeartContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true

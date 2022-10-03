@@ -12,6 +12,8 @@ namespace Game.UI
         public delegate void ShieldPressed();
         [Signal]
         public delegate void LeapPressed();
+        [Signal]
+        public delegate void SkipPressed();
 
         [Node]
         private Label turnLabel;
@@ -19,6 +21,8 @@ namespace Game.UI
         private Button shieldButton;
         [Node]
         private Button leapButton;
+        [Node]
+        private Button skipButton;
         [Node]
         private HBoxContainer heartContainer;
         [Node]
@@ -46,6 +50,7 @@ namespace Game.UI
 
             shieldButton.Connect("pressed", this, nameof(OnShieldPressed));
             leapButton.Connect("pressed", this, nameof(OnLeapPressed));
+            skipButton.Connect("pressed", this, nameof(OnSkipPressed));
             optionsButton.Connect("pressed", this, nameof(OnOptionsPressed));
         }
 
@@ -66,6 +71,11 @@ namespace Game.UI
             leapButton.Disabled = !gameBoard.TurnManager.IsPlayerTurn || leapCooldown > 0;
         }
 
+        private void UpdateSkipButton()
+        {
+            skipButton.Disabled = !gameBoard.TurnManager.IsPlayerTurn;
+        }
+
         private void OnTurnChanged(int turnCount)
         {
             turnLabel.Text = (5 - turnCount).ToString();
@@ -76,6 +86,7 @@ namespace Game.UI
             }
             UpdateShieldButton();
             UpdateLeapButton();
+            UpdateSkipButton();
         }
 
         private void OnPlayerTurnStarted(object _)
@@ -84,6 +95,7 @@ namespace Game.UI
             leapCooldown = Mathf.Max(leapCooldown - 1, 0);
             UpdateShieldButton();
             UpdateLeapButton();
+            UpdateSkipButton();
         }
 
         private async void OnOptionsPressed()
@@ -105,6 +117,11 @@ namespace Game.UI
             leapCooldown = 4;
             UpdateLeapButton();
             EmitSignal(nameof(LeapPressed));
+        }
+
+        private void OnSkipPressed()
+        {
+            EmitSignal(nameof(SkipPressed));
         }
 
         private void OnPlayerDamaged()

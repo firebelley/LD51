@@ -27,8 +27,6 @@ namespace Game.GameObject
         private Node footstepPlayer;
         [Node]
         private Node footstepPlayer2;
-        [Node]
-        private Node swordSwingPlayer;
 
         private GameBoard gameBoard;
         private SceneTreeTween tween;
@@ -94,6 +92,7 @@ namespace Game.GameObject
         {
             gameUI.Connect(nameof(GameUI.ShieldPressed), this, nameof(OnShieldPressed));
             gameUI.Connect(nameof(GameUI.LeapPressed), this, nameof(OnLeapPressed));
+            gameUI.Connect(nameof(GameUI.SkipPressed), this, nameof(OnSkipPressed));
             gameUI.ConnectPlayer(this);
         }
 
@@ -275,6 +274,11 @@ namespace Game.GameObject
         {
             gameBoard.ClearIndicators();
             PopulateValidMovementTiles(3);
+        }
+
+        private void OnSkipPressed()
+        {
+            EndTurn();
         }
 
         private async void OnEnemyDied()
