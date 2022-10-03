@@ -30,6 +30,7 @@ namespace Game.GameObject
 
         private int health = 3;
         private bool isActing = false;
+        private int enemyCount;
 
         private Vector2[] moveDirections = new Vector2[] {
             Vector2.Right,
@@ -53,6 +54,11 @@ namespace Game.GameObject
             gameBoard.Connect(nameof(GameBoard.TileClicked), this, nameof(OnTileClicked));
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
             gameBoard.TurnManager.Connect(nameof(TurnManager.TurnChanged), this, nameof(OnTurnChanged));
+            foreach (var enemy in GetTree().GetNodesInGroup<Enemy>())
+            {
+                enemyCount++;
+                enemy.Connect(nameof(Enemy.Died), this, nameof(OnEnemyDied));
+            }
         }
 
         public void ConnectUI(GameUI gameUI)
@@ -189,7 +195,7 @@ namespace Game.GameObject
 
             var success = await HandleClick(tile);
             isActing = false;
-            if (success)
+            if (success && enemyCount > 0)
             {
                 EndTurn();
             }
@@ -207,6 +213,16 @@ namespace Game.GameObject
             shieldIndicator = resourcePreloader.InstanceSceneOrNull<ShieldIndicator>();
             AddChild(shieldIndicator);
             EndTurn();
+        }
+
+        private async void OnEnemyDied()
+        {
+            enemyCount--;
+            if (enemyCount <= 0)
+            {
+                await ToSignal(GetTree().CreateTimer(1f), "timeout");
+                LevelManager.Advance();
+            }
         }
     }
 }

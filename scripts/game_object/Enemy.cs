@@ -10,6 +10,9 @@ namespace Game.GameObject
 {
     public class Enemy : Node2D
     {
+        [Signal]
+        public delegate void Died();
+
         [Node]
         private ResourcePreloader resourcePreloader;
         [Node]
@@ -61,6 +64,7 @@ namespace Game.GameObject
             health--;
             if (health <= 0)
             {
+                EmitSignal(nameof(Died));
                 QueueFree();
             }
         }
