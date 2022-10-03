@@ -32,6 +32,7 @@ margin_bottom = 352.0
 mouse_filter = 2
 
 [node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 margin_right = 624.0
 margin_bottom = 37.0
 text = "Seconds to
@@ -46,7 +47,7 @@ margin_right = 624.0
 margin_bottom = 75.0
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 1 )
-text = "10"
+text = "5"
 align = 1
 uppercase = true
 

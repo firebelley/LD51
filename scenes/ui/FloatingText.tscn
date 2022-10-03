@@ -1,0 +1,135 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://resources/theme.tres" type="Theme" id=1]
+[ext_resource path="res://scripts/ui/FloatingText.cs" type="Script" id=2]
+[ext_resource path="res://resources/Peaberry-Bold.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("..:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("..:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=1]
+resource_name = "default"
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("..:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 4.14106, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 1.5, 0.6 ), Vector2( 0.6, 1.5 ), Vector2( 1, 1 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("..:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 2.82843, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 0, -32 ) ]
+}
+tracks/2/type = "method"
+tracks/2/path = NodePath("..")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+    
+void fragment() {
+    COLOR = texture(TEXTURE, UV);
+    COLOR.a = ceil(COLOR.a);
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 3 )
+
+[sub_resource type="DynamicFont" id=5]
+outline_size = 2
+font_data = ExtResource( 3 )
+
+[node name="FloatingText" type="Node2D"]
+script = ExtResource( 2 )
+red = Color( 0.831373, 0.117647, 0.235294, 1 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Node2D/Label")
+autoplay = "default"
+anims/RESET = SubResource( 2 )
+anims/default = SubResource( 1 )
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="BackgroundLabel" type="Label" parent="Node2D"]
+unique_name_in_owner = true
+modulate = Color( 0.0196078, 0.0352941, 0.0784314, 1 )
+material = SubResource( 4 )
+margin_left = -128.0
+margin_top = -9.0
+margin_right = 128.0
+margin_bottom = 9.0
+rect_min_size = Vector2( 256, 18 )
+rect_pivot_offset = Vector2( 128, 9 )
+theme = ExtResource( 1 )
+custom_fonts/font = SubResource( 5 )
+text = "test"
+align = 1
+valign = 1
+uppercase = true
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Label" type="Label" parent="Node2D"]
+unique_name_in_owner = true
+margin_left = -128.0
+margin_top = -9.0
+margin_right = 128.0
+margin_bottom = 9.0
+rect_min_size = Vector2( 256, 18 )
+rect_pivot_offset = Vector2( 128, 9 )
+theme = ExtResource( 1 )
+text = "test"
+align = 1
+valign = 1
+uppercase = true

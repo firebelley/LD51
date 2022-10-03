@@ -22,12 +22,6 @@ namespace Game.GameObject
             }
         }
 
-        public override void _Process(float delta)
-        {
-            // targetPosition = GetTree().GetFirstNodeInGroup<Player>()?.GlobalPosition ?? targetPosition;
-            // GlobalPosition = GlobalPosition.LinearInterpolate(targetPosition, 1f - Mathf.Exp(-10f * delta));
-        }
-
         public static void Shake()
         {
             instance.shakyCamera2d.Call("shake");

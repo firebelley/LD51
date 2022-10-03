@@ -72,8 +72,16 @@ namespace Game.GameObject
         public async void Damage()
         {
             GameCamera.Shake();
-            if (IsInstanceValid(shieldIndicator)) return;
+            if (IsInstanceValid(shieldIndicator))
+            {
+                var text = gameBoard.FloatingTextManager.SpawnText("Blocked!");
+                text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
+                return;
+            }
             health--;
+            var text2 = gameBoard.FloatingTextManager.SpawnText(health <= 0 ? "Dead!" : "Oof!");
+            text2.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
+            text2.SetRed();
             EmitSignal(nameof(Damaged));
 
             if (IsDying)
@@ -225,6 +233,8 @@ namespace Game.GameObject
             if (isActing) return;
             shieldIndicator = resourcePreloader.InstanceSceneOrNull<ShieldIndicator>();
             AddChild(shieldIndicator);
+            var text = gameBoard.FloatingTextManager.SpawnText("Shields up!");
+            text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
             EndTurn();
         }
 

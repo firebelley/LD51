@@ -62,13 +62,26 @@ namespace Game.GameObject
         {
             GameCamera.Shake();
             wasHit = true;
-            if (isInvulnerable) return;
+            if (isInvulnerable)
+            {
+                var text = gameBoard.FloatingTextManager.SpawnText("Blocked!");
+                text.SetRed();
+                text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
+                return;
+            }
             health--;
             if (health <= 0)
             {
+                var text = gameBoard.FloatingTextManager.SpawnText("Slain!");
+                text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
                 gameBoard.EnemyPositions.Remove(this);
                 EmitSignal(nameof(Died));
                 QueueFree();
+            }
+            else
+            {
+                var text = gameBoard.FloatingTextManager.SpawnText("Hit!");
+                text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
             }
         }
 
@@ -76,12 +89,16 @@ namespace Game.GameObject
         {
             if (isInvulnerable)
             {
+                var text = gameBoard.FloatingTextManager.SpawnText("Invulnerable!");
+                text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
                 var shield = resourcePreloader.InstanceSceneOrNull<ShieldIndicator>();
                 AddChild(shield);
                 shield.Position = Vector2.Down * 4f;
             }
             else
             {
+                var text = gameBoard.FloatingTextManager.SpawnText("Vulnerable!");
+                text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
                 this.GetFirstNodeOfType<ShieldIndicator>()?.Die();
             }
         }

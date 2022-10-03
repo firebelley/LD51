@@ -21,6 +21,8 @@ namespace Game.UI
         private Button leapButton;
         [Node]
         private HBoxContainer heartContainer;
+        [Node]
+        private Label headerLabel;
 
         private GameBoard gameBoard;
         private int shieldCooldown;
@@ -63,7 +65,12 @@ namespace Game.UI
 
         private void OnTurnChanged(int turnCount)
         {
-            turnLabel.Text = (10 - turnCount).ToString();
+            turnLabel.Text = (5 - turnCount).ToString();
+            if (turnCount == 0)
+            {
+                var isInvuln = GetTree().GetFirstNodeInGroup<TurnManager>().IsInvulnerabilityStage;
+                headerLabel.Text = isInvuln ? "Seconds to\nVulnerability" : "Seconds to\nInvulnerability";
+            }
             UpdateShieldButton();
         }
 

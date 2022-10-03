@@ -23,6 +23,8 @@ namespace Game
         [Node]
         public TileMap TileMap { get; private set; }
         [Node]
+        public FloatingTextManager FloatingTextManager { get; private set; }
+        [Node]
         private GameUI gameUi;
         [Node]
         private Player player;

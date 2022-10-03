@@ -14,6 +14,7 @@ namespace Game.Manager
 
         public bool IsPlayerTurn { get; private set; } = true;
         private int turnCounter;
+        public bool IsInvulnerabilityStage = true;
 
         public override void _Notification(int what)
         {
@@ -36,12 +37,13 @@ namespace Game.Manager
             {
                 turnCounter++;
             }
-            var isTenthTurn = turnCounter == 10;
+            var isTenthTurn = turnCounter == 5;
 
             EmitSignal(nameof(TurnChanged), turnCounter);
             EmitSignal(IsPlayerTurn ? nameof(PlayerTurnStarted) : nameof(EnemyTurnStarted), isTenthTurn);
             if (isTenthTurn)
             {
+                IsInvulnerabilityStage = !IsInvulnerabilityStage;
                 turnCounter = 0;
             }
         }

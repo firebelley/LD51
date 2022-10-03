@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://resources/tiles.tres" type="TileSet" id=1]
 [ext_resource path="res://scenes/game_object/Player.tscn" type="PackedScene" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://scenes/ui/GameUI.tscn" type="PackedScene" id=8]
 [ext_resource path="res://scenes/ui/Background.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/ui/Vignette.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scenes/manager/FloatingTextManager.tscn" type="PackedScene" id=11]
 
 [node name="GameBoard" type="Node"]
 script = ExtResource( 6 )
@@ -41,3 +42,5 @@ position = Vector2( 80, 88 )
 
 [node name="Enemy" parent="Entities" instance=ExtResource( 3 )]
 position = Vector2( 108, 88 )
+
+[node name="FloatingTextManager" parent="." instance=ExtResource( 11 )]
