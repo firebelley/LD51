@@ -24,6 +24,7 @@ ScreenTransition="*res://addons/node_library/scenes/ScreenTransition.tscn"
 MusicPlayer="*res://scenes/autoload/MusicPlayer.tscn"
 Visuals="*res://scenes/autoload/Visuals.tscn"
 LevelManager="*res://scenes/manager/LevelManager.tscn"
+Cursor="*res://scenes/ui/Cursor.tscn"
 
 [debug]
 

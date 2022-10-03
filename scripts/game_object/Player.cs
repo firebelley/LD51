@@ -62,6 +62,26 @@ namespace Game.GameObject
             }
         }
 
+        public override void _Process(float delta)
+        {
+            if (gameBoard.TurnManager.IsPlayerTurn)
+            {
+                var mouseTile = gameBoard.WorldToTile(GetGlobalMousePosition());
+                if (validEnemyTiles.Contains(mouseTile))
+                {
+                    Cursor.UseAttack();
+                }
+                else
+                {
+                    Cursor.UseNormal();
+                }
+            }
+            else
+            {
+                Cursor.UseNormal();
+            }
+        }
+
         public void ConnectUI(GameUI gameUI)
         {
             gameUI.Connect(nameof(GameUI.ShieldPressed), this, nameof(OnShieldPressed));
