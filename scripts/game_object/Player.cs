@@ -188,7 +188,7 @@ namespace Game.GameObject
 
         private async void OnTileClicked(Vector2 tile)
         {
-            if (tween?.IsValid() == true)
+            if (tween?.IsValid() == true || enemyCount == 0)
             {
                 return;
             }
