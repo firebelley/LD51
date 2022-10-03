@@ -12,6 +12,8 @@ namespace Game.GameObject
     {
         [Signal]
         public delegate void Moved(Vector2 toTile);
+        [Signal]
+        public delegate void Damaged();
 
         [Node]
         private AnimationPlayer animationPlayer;
@@ -56,12 +58,15 @@ namespace Game.GameObject
         public void ConnectUI(GameUI gameUI)
         {
             gameUI.Connect(nameof(GameUI.ShieldPressed), this, nameof(OnShieldPressed));
+            gameUI.ConnectPlayer(this);
         }
 
         public void Damage()
         {
+            GameCamera.Shake();
             if (IsInstanceValid(shieldIndicator)) return;
             health--;
+            EmitSignal(nameof(Damaged));
         }
 
         private async Task MoveToTile(Vector2 tile)

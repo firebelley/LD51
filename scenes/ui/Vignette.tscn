@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float vignette_intensity = 0.4;
+uniform float vignette_opacity : hint_range(0.0, 1.0) = 0.5;
+uniform vec4 vignette_rgb : hint_color = vec4(0.0, 0.0, 0.0, 1.0);
+
+float vignette(vec2 uv){
+	uv *= 1.0 - uv.xy;
+	float vignette = uv.x * uv.y * 15.0;
+	return pow(vignette, vignette_intensity * vignette_opacity);
+}
+
+void fragment(){
+	vec4 color = texture(SCREEN_TEXTURE, SCREEN_UV);
+	vec4 text = texture(TEXTURE, UV);
+	
+	text.rgba *= (vignette_rgb.rgba);
+	text.rgba *= (1.0 - vignette(UV));
+	
+	COLOR = vec4((text.rgb)*color.rgb,text.a);
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/vignette_intensity = 0.084
+shader_param/vignette_opacity = 0.474
+shader_param/vignette_rgb = Color( 0.0196078, 0.0352941, 0.0784314, 1 )
+
+[node name="Vignette" type="CanvasLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource( 2 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2

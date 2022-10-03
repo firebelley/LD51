@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scenes/effect/ShieldIndicator.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/game_object/Player.cs" type="Script" id=2]
@@ -96,6 +96,23 @@ tracks/2/keys = {
 "values": [ Vector2( 0, 4 ), Vector2( 12, 4 ), Vector2( 0, 4 ) ]
 }
 
+[sub_resource type="Animation" id=4]
+resource_name = "idle"
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Visuals:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -2, -1 ), Vector2( 2, -1 ) ]
+}
+
 [sub_resource type="Animation" id=1]
 resource_name = "move"
 length = 0.3
@@ -144,9 +161,12 @@ script = ExtResource( 2 )
 resources = [ PoolStringArray( "ShieldIndicator" ), [ ExtResource( 1 ) ] ]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "idle"
 anims/RESET = SubResource( 2 )
 anims/attack = SubResource( 3 )
+anims/idle = SubResource( 4 )
 anims/move = SubResource( 1 )
+next/attack = "idle"
 
 [node name="Visuals" type="Node2D" parent="."]
 
@@ -155,4 +175,4 @@ unique_name_in_owner = true
 position = Vector2( 0, 4 )
 texture = ExtResource( 3 )
 centered = false
-offset = Vector2( -8, -24 )
+offset = Vector2( -6, -24 )

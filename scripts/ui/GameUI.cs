@@ -1,4 +1,5 @@
-using System;
+using Game.Effect;
+using Game.GameObject;
 using Game.Manager;
 using Godot;
 using GodotUtilities;
@@ -14,6 +15,8 @@ namespace Game.UI
         private Label turnLabel;
         [Node]
         private Button shieldButton;
+        [Node]
+        private HBoxContainer heartContainer;
 
         private GameBoard gameBoard;
         private int shieldCooldown;
@@ -33,6 +36,11 @@ namespace Game.UI
             gameBoard.TurnManager.Connect(nameof(TurnManager.PlayerTurnStarted), this, nameof(OnPlayerTurnStarted));
 
             shieldButton.Connect("pressed", this, nameof(OnShieldPressed));
+        }
+
+        public void ConnectPlayer(Player player)
+        {
+            player.Connect(nameof(Player.Damaged), this, nameof(OnPlayerDamaged));
         }
 
         private void UpdateShieldButton()
@@ -55,9 +63,16 @@ namespace Game.UI
 
         private void OnShieldPressed()
         {
-            shieldCooldown = 2;
+            shieldCooldown = 3;
             UpdateShieldButton();
             EmitSignal(nameof(ShieldPressed));
+        }
+
+        private void OnPlayerDamaged()
+        {
+            var childCount = heartContainer.GetChildCount();
+            if (childCount == 0) return;
+            heartContainer.GetChild<Heart>(childCount - 1).Die();
         }
     }
 }

@@ -93,7 +93,8 @@ namespace Game.GameObject
                 Vector2.Down,
                 Vector2.Right
             };
-            directions = directions.Where(x => x != lastDirection).ToArray();
+            var currentTile = gameBoard.WorldToTile(GlobalPosition);
+            directions = directions.Where(x => x != lastDirection && gameBoard.IsTileValid(currentTile + x)).ToArray();
 
             var chosenDirectionIndex = MathUtil.RNG.RandiRange(0, directions.Length - 1);
             var chosenDirection = directions[chosenDirectionIndex];
@@ -101,9 +102,9 @@ namespace Game.GameObject
             var chosenAttackIndex = MathUtil.RNG.RandiRange(0, attackTypes.Length - 1);
             var chosenAttack = attackTypes[chosenAttackIndex];
 
-            var currentTile = gameBoard.WorldToTile(GlobalPosition);
 
             var attackSquares = new List<Vector2>();
+            var emptyTiles = gameBoard.GetEmptyTiles().ToHashSet();
             var attackCount = chosenAttack == AttackType.Line ? 1 : 3;
 
             var rootTile = currentTile + chosenDirection;
@@ -120,7 +121,11 @@ namespace Game.GameObject
                     perp *= -1;
                 }
 
-                attackSquares.Add(rootTile + perp);
+                var desiredPos = rootTile + perp;
+                if (emptyTiles.Contains(desiredPos))
+                {
+                    attackSquares.Add(rootTile + perp);
+                }
             }
 
             foreach (var attackSquare in attackSquares)
@@ -150,6 +155,8 @@ namespace Game.GameObject
             UpdatePosition();
             animationPlayer.Play("teleport_in");
             await ToSignal(animationPlayer, "animation_finished");
+
+            animationPlayer.Play("idle");
         }
 
         private async void DoTurn()
