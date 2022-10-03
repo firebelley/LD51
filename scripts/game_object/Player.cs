@@ -21,6 +21,14 @@ namespace Game.GameObject
         private Node2D visuals;
         [Node]
         private ResourcePreloader resourcePreloader;
+        [Node]
+        private Node shieldHitPlayer;
+        [Node]
+        private Node footstepPlayer;
+        [Node]
+        private Node footstepPlayer2;
+        [Node]
+        private Node swordSwingPlayer;
 
         private GameBoard gameBoard;
         private SceneTreeTween tween;
@@ -94,6 +102,7 @@ namespace Game.GameObject
             GameCamera.Shake();
             if (IsInstanceValid(shieldIndicator))
             {
+                shieldHitPlayer.Call("play_times", 2);
                 var text = gameBoard.FloatingTextManager.SpawnText("Blocked!");
                 text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
                 return;
@@ -118,7 +127,11 @@ namespace Game.GameObject
             animationPlayer.Play("move");
 
             tween = CreateTween();
+            tween.SetParallel();
             tween.TweenProperty(this, "global_position", gameBoard.TileToWorld(tile), .3f).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+            tween.TweenCallback(footstepPlayer, "play").SetDelay(.2f);
+            tween.TweenCallback(footstepPlayer2, "play").SetDelay(.2f);
+            tween.Chain();
             tween.TweenCallback(this, nameof(KillTween));
 
             FaceTile(tile);

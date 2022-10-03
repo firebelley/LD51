@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scripts/autoload/MusicPlayer.cs" type="Script" id=1]
+[ext_resource path="res://assets/Cord.wav" type="AudioStream" id=2]
 
 [node name="MusicPlayer" type="Node"]
 pause_mode = 2
@@ -11,6 +12,7 @@ wait_time = 10.0
 one_shot = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-volume_db = -5.0
+stream = ExtResource( 2 )
+volume_db = -7.0
 autoplay = true
 bus = "music"

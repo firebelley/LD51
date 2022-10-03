@@ -1,9 +1,18 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://scripts/game_object/Enemy.cs" type="Script" id=1]
 [ext_resource path="res://scenes/game_object/AttackStraight.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/enemy/enemy.png" type="Texture" id=3]
 [ext_resource path="res://scenes/effect/ShieldIndicator.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/enemy/Impact_Hit_Bone_Muscle_01.wav" type="AudioStream" id=5]
+[ext_resource path="res://assets/enemy/Impact_Hit_Bone_Muscle_02.wav" type="AudioStream" id=6]
+[ext_resource path="res://assets/enemy/Impact_Hit_Bone_Muscle_03.wav" type="AudioStream" id=7]
+[ext_resource path="res://assets/enemy/Impact_Hit_Bone_Muscle_04.wav" type="AudioStream" id=8]
+[ext_resource path="res://assets/enemy/Impact_Hit_Bone_Muscle_05.wav" type="AudioStream" id=9]
+[ext_resource path="res://addons/node_library/scripts/random_audio_stream_player.gd" type="Script" id=10]
+[ext_resource path="res://assets/player/Metal Weapon Hit Metal 3_1.wav" type="AudioStream" id=11]
+[ext_resource path="res://assets/player/Metal Weapon Hit Metal 2_1.wav" type="AudioStream" id=12]
+[ext_resource path="res://assets/player/Metal Weapon Hit Metal 1_1.wav" type="AudioStream" id=13]
 
 [sub_resource type="Animation" id=6]
 length = 0.001
@@ -214,3 +223,45 @@ resources = [ PoolStringArray( "AttackStraight", "ShieldIndicator" ), [ ExtResou
 texture = ExtResource( 3 )
 centered = false
 offset = Vector2( -11, -26 )
+
+[node name="RandomAudioStreamPlayer" type="Node" parent="."]
+script = ExtResource( 10 )
+streams = [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ) ]
+randomize_pitch = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="RandomAudioStreamPlayer"]
+stream = ExtResource( 5 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="RandomAudioStreamPlayer"]
+stream = ExtResource( 6 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="RandomAudioStreamPlayer"]
+stream = ExtResource( 7 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="RandomAudioStreamPlayer"]
+stream = ExtResource( 8 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer5" type="AudioStreamPlayer" parent="RandomAudioStreamPlayer"]
+stream = ExtResource( 9 )
+bus = "sfx"
+
+[node name="ShieldHitPlayer" type="Node" parent="."]
+script = ExtResource( 10 )
+streams = [ ExtResource( 13 ), ExtResource( 12 ), ExtResource( 11 ) ]
+randomize_pitch = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="ShieldHitPlayer"]
+stream = ExtResource( 13 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="ShieldHitPlayer"]
+stream = ExtResource( 12 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="ShieldHitPlayer"]
+stream = ExtResource( 11 )
+bus = "sfx"

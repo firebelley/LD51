@@ -7,9 +7,9 @@ namespace Game.Effect
     public class Fireball : Node2D
     {
         [Node]
-        private AnimationPlayer animationPlayer;
-        [Node]
         private Particles2D particles2d;
+        [Node]
+        private Node randomAudioStreamPlayer;
 
         public override void _Notification(int what)
         {
@@ -21,6 +21,10 @@ namespace Game.Effect
 
         public void Start()
         {
+            if (!particles2d.Emitting)
+            {
+                randomAudioStreamPlayer.Call("play");
+            }
             particles2d.Emitting = true;
         }
 

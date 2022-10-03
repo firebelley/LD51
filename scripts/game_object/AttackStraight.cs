@@ -12,6 +12,8 @@ namespace Game.GameObject
         private ResourcePreloader resourcePreloader;
         [Node]
         private Fireball fireball;
+        [Node]
+        private Node randomAudioStreamPlayer;
 
         public Vector2 Direction;
         public bool IsActive => currentTile != null;
@@ -79,6 +81,7 @@ namespace Game.GameObject
             if (player != null && tile == gameBoard.WorldToTile(player.GlobalPosition))
             {
                 player.Damage();
+                randomAudioStreamPlayer.Call("play");
                 Die();
                 return true;
             }

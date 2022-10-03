@@ -19,6 +19,10 @@ namespace Game.GameObject
         private AnimationPlayer animationPlayer;
         [Node]
         private AnimationPlayer dieAnimationPlayer;
+        [Node]
+        private Node randomAudioStreamPlayer;
+        [Node]
+        private Node shieldHitPlayer;
 
         private GameBoard gameBoard;
         private int health = 2;
@@ -67,12 +71,15 @@ namespace Game.GameObject
             wasHit = true;
             if (isInvulnerable)
             {
+                shieldHitPlayer.Call("play_times", 2);
                 var text = gameBoard.FloatingTextManager.SpawnText("Blocked!");
                 text.SetRed();
                 text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
                 return;
             }
             health--;
+            randomAudioStreamPlayer.Call("play_times", 2);
+            shieldHitPlayer.Call("play");
             if (health <= 0)
             {
                 var text = gameBoard.FloatingTextManager.SpawnText("Slain!");

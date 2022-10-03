@@ -72,6 +72,7 @@ namespace Game.UI
                 headerLabel.Text = isInvuln ? "Seconds to\nVulnerability" : "Seconds to\nInvulnerability";
             }
             UpdateShieldButton();
+            UpdateLeapButton();
         }
 
         private void OnPlayerTurnStarted(object _)

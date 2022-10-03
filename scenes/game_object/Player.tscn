@@ -1,8 +1,27 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://scenes/effect/ShieldIndicator.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/game_object/Player.cs" type="Script" id=2]
 [ext_resource path="res://assets/player/player.png" type="Texture" id=3]
+[ext_resource path="res://assets/player/Metal Weapon Hit Metal 3_1.wav" type="AudioStream" id=4]
+[ext_resource path="res://assets/player/Metal Weapon Hit Metal 2_1.wav" type="AudioStream" id=5]
+[ext_resource path="res://assets/player/Metal Weapon Hit Metal 1_1.wav" type="AudioStream" id=6]
+[ext_resource path="res://addons/node_library/scripts/random_audio_stream_player.gd" type="Script" id=7]
+[ext_resource path="res://assets/player/Footstep Grass Walking 2_05.wav" type="AudioStream" id=8]
+[ext_resource path="res://assets/player/Footstep Grass Walking 2_08.wav" type="AudioStream" id=9]
+[ext_resource path="res://assets/player/Footstep Grass Walking 2_06.wav" type="AudioStream" id=10]
+[ext_resource path="res://assets/player/Footstep Grass Walking 2_09.wav" type="AudioStream" id=11]
+[ext_resource path="res://assets/player/Footstep Grass Walking 2_04.wav" type="AudioStream" id=12]
+[ext_resource path="res://assets/player/Footstep Grass Walking 2_07.wav" type="AudioStream" id=13]
+[ext_resource path="res://assets/player/Footstep Grass Walking 2_10.wav" type="AudioStream" id=14]
+[ext_resource path="res://assets/player/metal_small_movement_11.wav" type="AudioStream" id=15]
+[ext_resource path="res://assets/player/metal_small_movement_12.wav" type="AudioStream" id=16]
+[ext_resource path="res://assets/player/metal_small_movement_17.wav" type="AudioStream" id=17]
+[ext_resource path="res://assets/player/metal_small_movement_13.wav" type="AudioStream" id=18]
+[ext_resource path="res://assets/player/Weapon Draw Metal 1.wav" type="AudioStream" id=19]
+[ext_resource path="res://assets/player/Weapon Draw Metal 7.wav" type="AudioStream" id=20]
+[ext_resource path="res://assets/player/Weapon Draw Metal 10.wav" type="AudioStream" id=21]
+[ext_resource path="res://assets/player/Weapon Draw Metal 13.wav" type="AudioStream" id=22]
 
 [sub_resource type="Animation" id=2]
 length = 0.001
@@ -94,6 +113,20 @@ tracks/2/keys = {
 "transitions": PoolRealArray( 1.86607, 0.659753, 1 ),
 "update": 0,
 "values": [ Vector2( 0, 4 ), Vector2( 12, 4 ), Vector2( 0, 4 ) ]
+}
+tracks/3/type = "method"
+tracks/3/path = NodePath("SwordSwingPlayer")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "play"
+} ]
 }
 
 [sub_resource type="Animation" id=5]
@@ -217,3 +250,99 @@ position = Vector2( 0, 4 )
 texture = ExtResource( 3 )
 centered = false
 offset = Vector2( -8, -24 )
+
+[node name="ShieldHitPlayer" type="Node" parent="."]
+script = ExtResource( 7 )
+streams = [ ExtResource( 6 ), ExtResource( 5 ), ExtResource( 4 ) ]
+randomize_pitch = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="ShieldHitPlayer"]
+stream = ExtResource( 6 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="ShieldHitPlayer"]
+stream = ExtResource( 5 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="ShieldHitPlayer"]
+stream = ExtResource( 4 )
+bus = "sfx"
+
+[node name="FootstepPlayer" type="Node" parent="."]
+script = ExtResource( 7 )
+streams = [ ExtResource( 12 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 13 ), ExtResource( 9 ), ExtResource( 11 ), ExtResource( 14 ) ]
+randomize_pitch = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="FootstepPlayer"]
+stream = ExtResource( 12 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="FootstepPlayer"]
+stream = ExtResource( 8 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="FootstepPlayer"]
+stream = ExtResource( 10 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="FootstepPlayer"]
+stream = ExtResource( 13 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer5" type="AudioStreamPlayer" parent="FootstepPlayer"]
+stream = ExtResource( 9 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer6" type="AudioStreamPlayer" parent="FootstepPlayer"]
+stream = ExtResource( 11 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer7" type="AudioStreamPlayer" parent="FootstepPlayer"]
+stream = ExtResource( 14 )
+bus = "sfx"
+
+[node name="FootstepPlayer2" type="Node" parent="."]
+script = ExtResource( 7 )
+streams = [ ExtResource( 15 ), ExtResource( 16 ), ExtResource( 18 ), ExtResource( 17 ) ]
+randomize_pitch = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="FootstepPlayer2"]
+stream = ExtResource( 15 )
+volume_db = -7.0
+bus = "sfx"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="FootstepPlayer2"]
+stream = ExtResource( 16 )
+volume_db = -7.0
+bus = "sfx"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="FootstepPlayer2"]
+stream = ExtResource( 18 )
+volume_db = -7.0
+bus = "sfx"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="FootstepPlayer2"]
+stream = ExtResource( 17 )
+volume_db = -7.0
+bus = "sfx"
+
+[node name="SwordSwingPlayer" type="Node" parent="."]
+script = ExtResource( 7 )
+streams = [ ExtResource( 19 ), ExtResource( 20 ), ExtResource( 21 ), ExtResource( 22 ) ]
+randomize_pitch = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="SwordSwingPlayer"]
+stream = ExtResource( 19 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="SwordSwingPlayer"]
+stream = ExtResource( 20 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="SwordSwingPlayer"]
+stream = ExtResource( 21 )
+bus = "sfx"
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="SwordSwingPlayer"]
+stream = ExtResource( 22 )
+bus = "sfx"
