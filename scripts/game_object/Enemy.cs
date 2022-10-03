@@ -17,12 +17,15 @@ namespace Game.GameObject
         private ResourcePreloader resourcePreloader;
         [Node]
         private AnimationPlayer animationPlayer;
+        [Node]
+        private AnimationPlayer dieAnimationPlayer;
 
         private GameBoard gameBoard;
         private int health = 2;
         private bool isInvulnerable = true;
         private bool wasHit = false;
         private Vector2 lastDirection;
+        private bool isDying;
 
         private enum AttackType
         {
@@ -76,7 +79,9 @@ namespace Game.GameObject
                 text.GlobalPosition = GlobalPosition + (Vector2.Up * 24f);
                 gameBoard.EnemyPositions.Remove(this);
                 EmitSignal(nameof(Died));
-                QueueFree();
+                animationPlayer.Stop(true);
+                dieAnimationPlayer.Play("die");
+                isDying = true;
             }
             else
             {
@@ -214,7 +219,7 @@ namespace Game.GameObject
 
         private void OnEnemyTurnStarted(bool isTenthTurn)
         {
-            if (IsQueuedForDeletion()) return;
+            if (IsQueuedForDeletion() || isDying) return;
             turns++;
             if (isTenthTurn)
             {
