@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scenes/effect/ShieldIndicator.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/game_object/Player.cs" type="Script" id=2]
@@ -96,6 +96,46 @@ tracks/2/keys = {
 "values": [ Vector2( 0, 4 ), Vector2( 12, 4 ), Vector2( 0, 4 ) ]
 }
 
+[sub_resource type="Animation" id=5]
+resource_name = "die"
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("Visuals/Sprite:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.45, 0.5 ),
+"transitions": PoolRealArray( 1, 2.63902, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 4 ), Vector2( 0, -8 ), Vector2( 12, -2 ), Vector2( 12, -4 ), Vector2( 12, -2 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Visuals/Sprite:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.25 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.5, 1.5 ), Vector2( 0.9, 0.9 ), Vector2( 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Visuals/Sprite:rotation_degrees")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4 ),
+"transitions": PoolRealArray( 1, 2.14355, 1 ),
+"update": 0,
+"values": [ 0.0, -15.0, -90.0 ]
+}
+
 [sub_resource type="Animation" id=4]
 resource_name = "idle"
 length = 0.8
@@ -164,6 +204,7 @@ resources = [ PoolStringArray( "ShieldIndicator" ), [ ExtResource( 1 ) ] ]
 autoplay = "idle"
 anims/RESET = SubResource( 2 )
 anims/attack = SubResource( 3 )
+anims/die = SubResource( 5 )
 anims/idle = SubResource( 4 )
 anims/move = SubResource( 1 )
 next/attack = "idle"

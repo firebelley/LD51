@@ -35,6 +35,11 @@ namespace Game.Manager
             instance.Switch();
         }
 
+        public static void Restart()
+        {
+            instance.Switch();
+        }
+
         private void Switch()
         {
             GetNode("/root/ScreenTransition").Call("set_transition_color", transitionColor);

@@ -31,6 +31,7 @@ namespace Game.GameObject
         private int health = 3;
         private bool isActing = false;
         private int enemyCount;
+        private bool IsDying => health <= 0;
 
         private Vector2[] moveDirections = new Vector2[] {
             Vector2.Right,
@@ -68,12 +69,19 @@ namespace Game.GameObject
             gameUI.ConnectPlayer(this);
         }
 
-        public void Damage()
+        public async void Damage()
         {
             GameCamera.Shake();
             if (IsInstanceValid(shieldIndicator)) return;
             health--;
             EmitSignal(nameof(Damaged));
+
+            if (IsDying)
+            {
+                animationPlayer.Play("die");
+                await ToSignal(animationPlayer, "animation_finished");
+                LevelManager.Restart();
+            }
         }
 
         private async Task MoveToTile(Vector2 tile)
@@ -185,6 +193,7 @@ namespace Game.GameObject
 
         private void OnPlayerTurnStarted(bool isTenthTurn)
         {
+            if (IsDying) return;
             PopulateValidEnemyTiles();
             PopulateValidMovementTiles();
             ClearShield();
@@ -192,7 +201,7 @@ namespace Game.GameObject
 
         private async void OnTileClicked(Vector2 tile)
         {
-            if (tween?.IsValid() == true || enemyCount == 0)
+            if (tween?.IsValid() == true || enemyCount == 0 || IsDying)
             {
                 return;
             }
