@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using Game.Effect;
 using Game.Manager;
@@ -20,6 +19,8 @@ namespace Game.GameObject
         private Node2D visuals;
         [Node]
         private ResourcePreloader resourcePreloader;
+        [Node]
+        private Sprite sprite;
 
         private GameBoard gameBoard;
         private SceneTreeTween tween;
@@ -74,14 +75,36 @@ namespace Game.GameObject
             tween.TweenProperty(this, "global_position", gameBoard.TileToWorld(tile), .3f).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
             tween.TweenCallback(this, nameof(KillTween));
 
+            FaceTile(tile);
+
+            await ToSignal(tween, "finished");
+        }
+
+
+        private async Task AttackTile(Vector2 tile)
+        {
+            animationPlayer.Play("attack");
+
+            var originalPosition = GlobalPosition;
+            tween = CreateTween();
+            tween.TweenInterval(.15f);
+            tween.TweenCallback(gameBoard.GetEnemyAtTile(tile), nameof(Enemy.Damage));
+            tween.TweenInterval(.3f);
+            tween.TweenCallback(this, nameof(KillTween));
+
+            FaceTile(tile);
+
+            await ToSignal(tween, "finished");
+        }
+
+        private void FaceTile(Vector2 tile)
+        {
             var xsign = Mathf.Sign((tile - gameBoard.WorldToTile(GlobalPosition)).x);
             if (xsign != Mathf.Sign(visuals.Scale.x) && xsign != 0)
             {
                 var scaleTween = CreateTween();
                 scaleTween.TweenProperty(visuals, "scale", new Vector2(xsign, 1f), .3f).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
             }
-
-            await ToSignal(tween, "finished");
         }
 
         private void PopulateValidMovementTiles()
@@ -124,7 +147,7 @@ namespace Game.GameObject
             isActing = true;
             if (validEnemyTiles.Contains(tile))
             {
-                gameBoard.GetEnemyAtTile(tile).Damage();
+                await AttackTile(tile);
                 return true;
             }
             else if (validMovementTiles.Contains(tile))

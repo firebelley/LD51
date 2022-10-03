@@ -50,6 +50,7 @@ namespace Game.GameObject
 
         public void Damage()
         {
+            GameCamera.Shake();
             if (isInvulnerable) return;
             health--;
             if (health <= 0)

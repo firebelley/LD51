@@ -35,7 +35,7 @@ position = Vector2( 0, 120 )
 
 [node name="Player" parent="Entities" instance=ExtResource( 2 )]
 unique_name_in_owner = true
-position = Vector2( -36, -12 )
+position = Vector2( 80, 88 )
 
 [node name="Enemy" parent="Entities" instance=ExtResource( 3 )]
 position = Vector2( 108, 88 )
