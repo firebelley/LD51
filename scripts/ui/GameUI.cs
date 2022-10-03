@@ -53,7 +53,7 @@ namespace Game.UI
 
         private void UpdateShieldButton()
         {
-            shieldButton.Text = shieldCooldown > 0 ? $"({shieldCooldown})" : "";
+            shieldButton.Text = shieldCooldown > 0 ? $"({shieldCooldown})" : "Shield";
             shieldButton.Disabled = !gameBoard.TurnManager.IsPlayerTurn || shieldCooldown > 0;
         }
 
