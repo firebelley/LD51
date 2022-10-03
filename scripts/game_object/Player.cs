@@ -185,7 +185,7 @@ namespace Game.GameObject
             foreach (var direction in moveDirections)
             {
                 var newTile = (direction * range) + tilePos;
-                if (gameBoard.IsTileValid(newTile) && !validEnemyTiles.Contains(newTile) && !attackTiles.Contains(newTile))
+                if (gameBoard.IsTileValid(newTile) && !validEnemyTiles.Contains(newTile) && !attackTiles.Contains(newTile) && gameBoard.GetEnemyAtTile(newTile) == null)
                 {
                     validMovementTiles.Add(newTile);
                 }

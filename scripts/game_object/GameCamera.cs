@@ -9,8 +9,6 @@ namespace Game.GameObject
         [Node]
         private Camera2D shakyCamera2d;
 
-        private Vector2 targetPosition;
-
         private static GameCamera instance;
 
         public override void _Notification(int what)

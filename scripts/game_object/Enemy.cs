@@ -124,7 +124,6 @@ namespace Game.GameObject
 
         private void UpdatePosition()
         {
-
             gameBoard.EnemyPositions[this] = gameBoard.WorldToTile(GlobalPosition);
         }
 

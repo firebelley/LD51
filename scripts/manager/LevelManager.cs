@@ -6,8 +6,6 @@ namespace Game.Manager
     public class LevelManager : Node
     {
         [Export]
-        private Color transitionColor;
-        [Export]
         private PackedScene[] levels = new PackedScene[0];
 
         private static LevelManager instance;
