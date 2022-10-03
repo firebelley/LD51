@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/manager/LevelManager.cs" type="Script" id=1]
 [ext_resource path="res://scenes/levels/Level1.tscn" type="PackedScene" id=2]
@@ -6,8 +6,9 @@
 [ext_resource path="res://scenes/levels/Level3.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/levels/Level4.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/levels/Level5.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/levels/Level6.tscn" type="PackedScene" id=7]
 
 [node name="LevelManager" type="Node"]
 script = ExtResource( 1 )
 transitionColor = Color( 0.0666667, 0.0196078, 0.141176, 1 )
-levels = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ) ]
+levels = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ]
